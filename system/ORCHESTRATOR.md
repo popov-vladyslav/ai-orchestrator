@@ -345,7 +345,7 @@ Every implemented ticket must be reviewed for:
 Load `@ai/prompts/task-executor.md` to execute an approved ticket.
 Track progress in `.ai/<slug>/tasks.md` in your project (see `@ai/system/WORKSPACE.md`).
 
-Before execution begins, write the full approved ticket artifact (all fields: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`) into the TODO section of `@ai/tasks/tasks.md`. The executor reads the full artifact from there — do not pass only `ticket_id - title`.
+Before execution begins, write the full approved ticket artifact (all fields: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`) into `.ai/<slug>/tickets.md`. Add the ticket id and title to the TODO section of `.ai/<slug>/tasks.md`. The executor reads the full artifact from `tickets.md` and tracks state in `tasks.md`.
 
 ---
 
