@@ -2,7 +2,7 @@
 
 * **Part of:** `@ai/system/ORCHESTRATOR.md`
 * **Used by:** Ticket execution phase — all modes; may be delegated to Codex via `@ai/system/CLAUDE_CODE_INTEGRATION.md`
-* **Uses:** approved tickets from `@ai/tasks/tasks.md`
+* **Uses:** full ticket artifacts from `.ai/<slug>/tickets.md`; reads and updates `.ai/<slug>/tasks.md` for state tracking
 * **Outputs to:** `@ai/prompts/reviewer.md`
 
 ---

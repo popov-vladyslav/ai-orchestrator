@@ -3,7 +3,7 @@
 * **Part of:** `@ai/system/ORCHESTRATOR.md`
 * **Used by:** All modes — after `@ai/skills/epic-generator.md` (skippable if one atomic ticket remains)
 * **Uses:** epics from `@ai/skills/epic-generator.md`
-* **Outputs to:** `@ai/prompts/plan-reviewer.md` → `@ai/approval-template.md` (checkpoint 3) → `@ai/tasks/tasks.md` (after human approval)
+* **Outputs to:** `@ai/prompts/plan-reviewer.md` → `@ai/approval-template.md` (checkpoint 3) → `.ai/<slug>/tickets.md` and `.ai/<slug>/tasks.md` (after human approval)
 
 ---
 
