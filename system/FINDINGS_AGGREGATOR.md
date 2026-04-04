@@ -3,7 +3,7 @@
 * **Part of:** `@ai/system/ORCHESTRATOR.md`
 * **Used by:** All modes — after `@ai/system/SKILL_EXECUTOR.md` output and/or `@ai/skills/review-validator.md` output is available
 * **Uses:** findings from `@ai/skills/review-validator.md` and/or `@ai/system/SKILL_EXECUTOR.md`
-* **Outputs to:** `@ai/skills/prioritizer.md`
+* **Outputs to:** `@ai/skills/prioritizer.md`; writes normalized findings to `.ai/<slug>/findings.md`
 
 ---
 
