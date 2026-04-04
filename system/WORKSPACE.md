@@ -46,10 +46,20 @@ Derive slug from the feature description:
 
 At the start of every pipeline:
 
+0. Identify the project root — the directory containing the codebase being worked on. Use `git rev-parse --show-toplevel` if inside a git repo, otherwise use the current working directory. This is provided by the orchestrator.
 1. Derive slug from the feature description
 2. Check if `.ai/<slug>/` exists in the project root
 3. **If exists** and `context.md` Status is `planning` or `executing` → resume — read `context.md` and continue from current status. Do not overwrite any existing files.
+   - If Status is `reviewing` → resume at Checkpoint 4 review step
+   - If Status is `done` → the workspace should have been deleted; treat as not exists and create fresh
 4. **If not exists** → create `.ai/<slug>/`, write `context.md` with Status `planning`, create empty `findings.md`, `tickets.md`, `tasks.md`
+
+### Recovery
+
+If `.ai/<slug>/` exists but `context.md` is missing or has no valid Status field:
+1. Log a warning: "workspace found but context.md is missing or invalid"
+2. Treat as not exists — re-create context.md with Status `planning`
+3. Do not overwrite `findings.md`, `tickets.md`, or `tasks.md` if they exist
 
 ### .gitignore
 
@@ -94,6 +104,8 @@ Written once at creation by the orchestrator. Updated at each status transition.
 - **Active agent:** Claude Code | Codex | (none)
 ```
 
+Only the orchestrator (`@ai/system/ORCHESTRATOR.md`) updates `context.md`. Other agents (task-executor, reviewer) read it but do not write to it.
+
 ### findings.md
 
 Written by `@ai/system/FINDINGS_AGGREGATOR.md` (findings section) and `@ai/skills/epic-generator.md` (epics section). Read by `@ai/skills/prioritizer.md` and `@ai/skills/ticket-splitter.md`.
@@ -118,7 +130,7 @@ Written by the orchestrator after Checkpoint 3 approval (from ticket-splitter ou
 ```
 # Tickets
 
-## <ticket-id>: <title>
+## T-001: <title>
 
 - **epic_id:** E-001
 - **goal:** one sentence
@@ -130,6 +142,8 @@ Written by the orchestrator after Checkpoint 3 approval (from ticket-splitter ou
 - **parallelizable:** true | false
 - **source_finding_ids:** [finding ids]
 ```
+
+Ticket IDs use `T-NNN` format (T-001, T-002, etc.) to match the `tasks.md` board.
 
 ### tasks.md
 
