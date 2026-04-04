@@ -1,0 +1,175 @@
+## System Context
+
+* **Part of:** `@ai/system/ORCHESTRATOR.md`
+* **Used by:** ORCHESTRATOR — Step 0 of every pipeline
+* **Uses:** nothing
+* **Outputs to:** creates `.ai/<slug>/` workspace in the project root with 4 files
+
+---
+
+# WORKSPACE
+
+## Purpose
+
+Manages per-feature temporary workspaces that enable multi-session and multi-agent cooperation. Every pipeline creates or resumes a workspace and deletes it after the final approval checkpoint.
+
+---
+
+## Location
+
+Lives in the **project being worked on** — not in the `ai/` system folder:
+
+```
+<project-root>/
+└── .ai/
+    └── <feature-slug>/
+        ├── context.md    ← goal, scope, status — written once, read by all agents
+        ├── findings.md   ← findings and epics — written during planning
+        ├── tickets.md    ← approved ticket artifacts — written after Checkpoint 3
+        └── tasks.md      ← TODO / IN PROGRESS / DONE board
+```
+
+---
+
+## Naming
+
+Derive slug from the feature description:
+- lowercase, words joined with `-`
+- max 40 characters
+- examples: `add-oauth-login`, `fix-payment-timeout`, `refactor-auth-middleware`
+
+---
+
+## Lifecycle
+
+### Step 0: Create or Resume
+
+At the start of every pipeline:
+
+1. Derive slug from the feature description
+2. Check if `.ai/<slug>/` exists in the project root
+3. **If exists** and `context.md` Status is `planning` or `executing` → resume — read `context.md` and continue from current status. Do not overwrite any existing files.
+4. **If not exists** → create `.ai/<slug>/`, write `context.md` with Status `planning`, create empty `findings.md`, `tickets.md`, `tasks.md`
+
+### .gitignore
+
+When creating the first workspace in a project, check for `.ai/` in `.gitignore`. If missing, append `.ai/` to `.gitignore` automatically.
+
+### Status Transitions
+
+Update `context.md` Status field at each transition:
+
+| Status | When |
+|--------|------|
+| `planning` | From creation through Checkpoint 3 |
+| `executing` | After Checkpoint 3, during ticket execution |
+| `reviewing` | During Checkpoint 4 review |
+| `done` | After Checkpoint 4 approval — triggers deletion |
+
+### Deletion
+
+After Checkpoint 4 is approved:
+1. Update `context.md` Status to `done`
+2. Delete `.ai/<slug>/` and all its contents
+3. If `.ai/` directory is now empty, leave it in place (the `.gitignore` entry remains useful)
+
+---
+
+## File Schemas
+
+### context.md
+
+Written once at creation by the orchestrator. Updated at each status transition. Read by all agents at the start of every session to orient themselves.
+
+```
+# Workspace: <feature-slug>
+
+- **Mode:** FEATURE_MODE | REVIEW_MODE | BUGFIX_MODE | PERFORMANCE_MODE
+- **Goal:** one sentence description
+- **Scope:** what is in scope
+- **Out of scope:** what is explicitly excluded
+- **Constraints:** known constraints or assumptions
+- **Created:** YYYY-MM-DD
+- **Status:** planning | executing | reviewing | done
+- **Active agent:** Claude Code | Codex | (none)
+```
+
+### findings.md
+
+Written by `@ai/system/FINDINGS_AGGREGATOR.md` (findings section) and `@ai/skills/epic-generator.md` (epics section). Read by `@ai/skills/prioritizer.md` and `@ai/skills/ticket-splitter.md`.
+
+```
+# Findings
+
+## Epics
+[epic artifacts — id, title, goal, scope, impact, priority, dependencies[], success_criteria[], source_finding_ids[]]
+
+## Normalized Findings
+[finding artifacts — id, title, summary, category, severity, evidence, impact, recommended_action, dependencies[]]
+
+## Passthrough
+[missing_areas[], priority_hints[] forwarded from upstream]
+```
+
+### tickets.md
+
+Written by the orchestrator after Checkpoint 3 approval (from ticket-splitter output). Read by `@ai/prompts/task-executor.md`.
+
+```
+# Tickets
+
+## <ticket-id>: <title>
+
+- **epic_id:** E-001
+- **goal:** one sentence
+- **files:** [list]
+- **changes:** [list]
+- **acceptance_criteria:** [list]
+- **risks:** [list]
+- **dependencies:** [ticket ids]
+- **parallelizable:** true | false
+- **source_finding_ids:** [finding ids]
+```
+
+### tasks.md
+
+Written by the orchestrator after Checkpoint 3. Updated by `@ai/prompts/task-executor.md` as tickets move through states. Intentionally lightweight — full artifact is in `tickets.md`.
+
+```
+# Tasks
+
+## TODO
+- T-001 — Add OAuth provider config
+
+## IN PROGRESS
+- T-002 — Implement callback handler
+
+## DONE
+- T-003 — Update environment variables
+```
+
+---
+
+## Multi-Agent Cooperation
+
+When delegating to Codex via `@ai/system/CLAUDE_CODE_INTEGRATION.md`, always pass `workspace_path` so Codex can read context and write results without needing the full conversation history.
+
+```
+Claude Code (session 1)
+  → creates .ai/auth-feature/
+  → runs planning pipeline
+  → writes findings.md, tickets.md, tasks.md
+  → delegates T-001 to Codex
+
+Codex (session 2)
+  → reads .ai/auth-feature/context.md    (orient)
+  → reads .ai/auth-feature/tickets.md    (full spec)
+  → reads .ai/auth-feature/tasks.md      (check state)
+  → executes T-001
+  → moves T-001 from TODO → DONE in tasks.md
+
+Claude Code (session 3)
+  → reads .ai/auth-feature/tasks.md      (resume)
+  → reviews T-001 output
+  → continues with T-002
+```
