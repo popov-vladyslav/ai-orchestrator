@@ -40,8 +40,9 @@ Every runtime file in this system and when to load it (see `docs/` for non-runti
 | `@ai/prompts/reviewer.md` | Reviews implementation for correctness and safety | After each ticket execution |
 | `@ai/prompts/plan-reviewer.md` | Reviews plan structure before execution — checks goal alignment, ticket completeness, dependencies | All modes — after Ticket Splitter, before planning approval |
 | `@ai/approval-template.md` | Approval checkpoint format | All 4 approval gates |
-| `@ai/tasks/tasks.md` | Lightweight execution board for approved tickets | During ticket execution |
+| `@ai/tasks/tasks.md` | Pointer to workspace — active boards live in `.ai/<slug>/tasks.md` in your project | Reference only |
 | `@ai/system/CLAUDE_CODE_INTEGRATION.md` | Multi-agent delegation rules for Claude Code + Codex | When delegating work to a sub-agent |
+| `@ai/system/WORKSPACE.md` | Per-feature workspace contract — naming, schemas, lifecycle, resume logic | Step 0 of every pipeline |
 
 ---
 
@@ -94,6 +95,7 @@ Approval gates use `@ai/approval-template.md`. Four gates are mandatory for stan
 
 ### REVIEW_MODE
 
+0. Load `@ai/system/WORKSPACE.md` → create or resume `.ai/<slug>/`, write `context.md`
 1. Load `@ai/skills/review-validator.md` → validate and normalize the review
 2. Load `@ai/approval-template.md` → **[Checkpoint 1: after framing]** human approval
 3. Load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai/skills-mapping.md`)
@@ -108,9 +110,11 @@ Approval gates use `@ai/approval-template.md`. Four gates are mandatory for stan
 12. Load `@ai/prompts/task-executor.md` → execute each approved ticket
 13. Load `@ai/prompts/reviewer.md` → review implementation
 14. Load `@ai/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
+    → After approval: update `context.md` Status to `done`, delete `.ai/<slug>/`
 
 ### FEATURE_MODE
 
+0. Load `@ai/system/WORKSPACE.md` → create or resume `.ai/<slug>/`, write `context.md`
 1. Load `@ai/skills/architect.md` → frame problem, define scope
 2. Load `@ai/approval-template.md` → **[Checkpoint 1: after framing]** human approval
 3. Load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai/skills-mapping.md`)
@@ -125,9 +129,11 @@ Approval gates use `@ai/approval-template.md`. Four gates are mandatory for stan
 12. Load `@ai/prompts/task-executor.md` → execute each approved ticket
 13. Load `@ai/prompts/reviewer.md` → review implementation
 14. Load `@ai/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
+    → After approval: update `context.md` Status to `done`, delete `.ai/<slug>/`
 
 ### BUGFIX_MODE
 
+0. Load `@ai/system/WORKSPACE.md` → create or resume `.ai/<slug>/`, write `context.md`
 1. Load `@ai/skills/architect.md` OR `@ai/skills/review-validator.md` → frame or validate
 2. Load `@ai/approval-template.md` → **[Checkpoint 1: after framing]** human approval
 3. If non-trivial: load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills
@@ -142,11 +148,13 @@ Approval gates use `@ai/approval-template.md`. Four gates are mandatory for stan
 12. Load `@ai/prompts/task-executor.md` → execute each approved ticket
 13. Load `@ai/prompts/reviewer.md` → review implementation
 14. Load `@ai/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
+    → After approval: update `context.md` Status to `done`, delete `.ai/<slug>/`
 
 ### PERFORMANCE_MODE
 
 > Note: PERFORMANCE_MODE starts with skill discovery — there is no framing step, so Checkpoint 1 is not applicable. Checkpoints 2, 3, and 4 are mandatory.
 
+0. Load `@ai/system/WORKSPACE.md` → create or resume `.ai/<slug>/`, write `context.md`
 1. Load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai/skills-mapping.md`)
 2. Load `@ai/system/SKILL_EXECUTOR.md` → run each selected skill
 3. Load `@ai/system/FINDINGS_AGGREGATOR.md` → merge and normalize findings
@@ -160,6 +168,7 @@ Approval gates use `@ai/approval-template.md`. Four gates are mandatory for stan
 11. Load `@ai/prompts/task-executor.md` → execute each approved ticket
 12. Load `@ai/prompts/reviewer.md` → review implementation
 13. Load `@ai/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
+    → After approval: update `context.md` Status to `done`, delete `.ai/<slug>/`
 
 ---
 
@@ -334,7 +343,7 @@ Every implemented ticket must be reviewed for:
 ## Task Execution
 
 Load `@ai/prompts/task-executor.md` to execute an approved ticket.
-Track progress in `@ai/tasks/tasks.md`.
+Track progress in `.ai/<slug>/tasks.md` in your project (see `@ai/system/WORKSPACE.md`).
 
 Before execution begins, write the full approved ticket artifact (all fields: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`) into the TODO section of `@ai/tasks/tasks.md`. The executor reads the full artifact from there — do not pass only `ticket_id - title`.
 
