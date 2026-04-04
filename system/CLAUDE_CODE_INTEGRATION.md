@@ -61,6 +61,7 @@ When `Claude Code` delegates to `Codex`, include:
 * `inputs`: review text, findings, epics, tickets, or source files
 * `required_output`: expected artifact shape
 * `constraints`: do not edit code, edit only listed files, preserve behavior, and so on
+* `workspace_path`: `.ai/<slug>/` — path where Codex reads context, tickets, and writes task state
 
 ---
 
@@ -79,8 +80,11 @@ Ask `Codex` to:
 
 Ask `Codex` to:
 
+* read context from `.ai/<slug>/context.md` to orient itself
+* read the full ticket artifact from `.ai/<slug>/tickets.md`
 * execute one ticket using `@ai/prompts/task-executor.md`
 * touch only approved files
+* update `.ai/<slug>/tasks.md` (move ticket from TODO → DONE)
 * return execution summary, verification, and residual risks
 
 ### Example: Folder Analysis
