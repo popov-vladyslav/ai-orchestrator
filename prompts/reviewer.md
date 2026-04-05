@@ -46,6 +46,10 @@ You are a strict reviewer.
 * `evidence_present`
 * `gaps[]`
 
+### Workspace Write
+
+After completing review, append the review output (Blockers, Issues, Verification Assessment, and decision) to `.ai/<slug>/results.md` under the existing `## <ticket_id>` heading.
+
 ---
 
 ## Rules

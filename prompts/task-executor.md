@@ -51,3 +51,7 @@ You are executing one ticket.
 
 * `remaining_risks[]`
 * `rollback_notes[]`
+
+### Workspace Write
+
+After completing execution, append the Execution Summary and Risks to `.ai/<slug>/results.md` under a `## <ticket_id>` heading.

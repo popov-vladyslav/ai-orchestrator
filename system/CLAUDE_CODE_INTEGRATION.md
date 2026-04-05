@@ -85,6 +85,7 @@ Ask `Codex` to:
 * execute one ticket using `@ai/prompts/task-executor.md`
 * touch only approved files
 * update `.ai/<slug>/tasks.md` (move ticket from TODO → DONE)
+* append execution summary to `.ai/<slug>/results.md` under `## <ticket_id>`
 * return execution summary, verification, and residual risks
 
 ### Example: Folder Analysis

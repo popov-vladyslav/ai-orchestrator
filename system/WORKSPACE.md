@@ -3,7 +3,7 @@
 * **Part of:** `@ai/system/ORCHESTRATOR.md`
 * **Used by:** ORCHESTRATOR — Step 0 of every pipeline
 * **Uses:** nothing
-* **Outputs to:** creates `.ai/<slug>/` workspace in the project root with 4 files
+* **Outputs to:** creates `.ai/<slug>/` workspace in the project root with 5 files
 
 ---
 
@@ -26,7 +26,8 @@ Lives in the **project being worked on** — not in the `ai/` system folder:
         ├── context.md    ← goal, scope, status — written once, read by all agents
         ├── findings.md   ← findings and epics — written during planning
         ├── tickets.md    ← approved ticket artifacts — written after Checkpoint 3
-        └── tasks.md      ← TODO / IN PROGRESS / DONE board
+        ├── tasks.md      ← TODO / IN PROGRESS / DONE board
+        └── results.md    ← execution summaries and review output — appended per ticket
 ```
 
 ---
@@ -162,6 +163,27 @@ Written by the orchestrator after Checkpoint 3. Updated by `@ai/prompts/task-exe
 - T-003 — Update environment variables
 ```
 
+### results.md
+
+Appended by `@ai/prompts/task-executor.md` (execution summary) and `@ai/prompts/reviewer.md` (review output) after each ticket completes. Read by any agent resuming a session to understand what has already been executed and reviewed.
+
+```
+# Results
+
+## T-001
+
+### Execution
+- **status:** done | failed
+- **files_changed:** [list of paths]
+- **verification:** [checks run and results]
+- **remaining_risks:** [list]
+
+### Review
+- **decision:** APPROVE | REVISE
+- **blockers:** [list or none]
+- **issues:** [list or none]
+```
+
 ---
 
 ## Multi-Agent Cooperation
@@ -181,6 +203,7 @@ Codex (session 2)
   → reads .ai/auth-feature/tasks.md      (check state)
   → executes T-001
   → moves T-001 from TODO → DONE in tasks.md
+  → appends execution summary to results.md
 
 Claude Code (session 3)
   → reads .ai/auth-feature/tasks.md      (resume)
