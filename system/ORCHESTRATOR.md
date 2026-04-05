@@ -200,11 +200,11 @@ Delegation rules:
 
 Skip steps only when the reason is explicit in the output.
 
-* Skip `Architect` if the input already defines scope, constraints, and success criteria.
-* Skip `Review Validator` if the review has already been de-duplicated and prioritized.
-* Skip `Skill Discovery` only for trivial, single-surface changes with no domain ambiguity.
-* Skip `Epic Generator` when the work fits one independently shippable task group.
-* Skip `Ticket Splitter` when exactly one atomic ticket remains.
+* **Skip `Architect`** if the input already defines scope, constraints, and success criteria. Pass the input directly to `@ai/system/SKILL_DISCOVERY.md`.
+* **Skip `Review Validator`** if the review has already been de-duplicated and prioritized. Pass findings directly to `@ai/system/FINDINGS_AGGREGATOR.md`.
+* **Skip `Skill Discovery`** only for trivial, single-surface changes with no domain ambiguity. Proceed directly to `@ai/system/FINDINGS_AGGREGATOR.md` with any available findings.
+* **Skip `Epic Generator`** when the work fits one independently shippable task group. Pass the prioritized findings directly to `@ai/skills/ticket-splitter.md` — treat the top finding group as an implicit single epic.
+* **Skip `Ticket Splitter`** when exactly one atomic ticket remains after epic generation. Pass the epic directly to `@ai/prompts/plan-reviewer.md` — treat the epic goal as the single ticket goal.
 
 ---
 
