@@ -34,10 +34,18 @@ Lives in the **project being worked on** — not in the `ai/` system folder:
 
 ## Naming
 
-Derive slug from the feature description:
-- lowercase, words joined with `-`
-- max 40 characters
-- examples: `add-oauth-login`, `fix-payment-timeout`, `refactor-auth-middleware`
+Derive a deterministic slug from the feature description using this exact algorithm:
+1. Lowercase the description
+2. Strip all characters except letters, numbers, and spaces
+3. Replace spaces with `-`
+4. Truncate to 40 characters at a word boundary
+5. If a workspace with the same slug already exists for a different feature, append `-2`, `-3`, etc.
+
+Examples:
+- "Add OAuth login" → `add-oauth-login`
+- "Fix payment timeout bug" → `fix-payment-timeout-bug`
+- "Refactor auth middleware" → `refactor-auth-middleware`
+- "Fix bug #123 in the API layer!" → `fix-bug-123-in-the-api-layer`
 
 ---
 
@@ -133,6 +141,7 @@ Written by the orchestrator after Checkpoint 3 approval (from ticket-splitter ou
 
 ## T-001: <title>
 
+- **id:** T-001
 - **epic_id:** E-001
 - **goal:** one sentence
 - **files:** [list]
