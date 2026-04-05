@@ -7,7 +7,7 @@
 
 ## Context
 
-The `ai/` system is a multi-file orchestration framework for AI-assisted code review, feature development, bugfix analysis, and performance work. It supports delegation between Claude Code (orchestrator) and Codex (specialist agent).
+The `ai-orchestrator/` system is a multi-file orchestration framework for AI-assisted code review, feature development, bugfix analysis, and performance work. It supports delegation between Claude Code (orchestrator) and Codex (specialist agent).
 
 Previously, `ORCHESTRATOR.md` described the workflow in abstract terms but did not reference the actual files that implement each step. Sub-files had no awareness of their role in the larger system. This made the system hard to adopt: pointing an AI at `ORCHESTRATOR.md` left it guessing which files to load and when.
 
@@ -19,7 +19,7 @@ Previously, `ORCHESTRATOR.md` described the workflow in abstract terms but did n
 
 ### Pattern
 
-Every file in `ai/` participates in a two-way reference graph:
+Every file in `ai-orchestrator/` participates in a two-way reference graph:
 
 - **ORCHESTRATOR.md → sub-files:** System Map table lists every runtime file with its role and when to load it. Each pipeline step has explicit `→ load @ai-orchestrator/...` annotations.
 - **Sub-files → ORCHESTRATOR.md and peers:** Every file has a `## System Context` header with `Part of`, `Used by`, `Uses`, and `Outputs to` fields.

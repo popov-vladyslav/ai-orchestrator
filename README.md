@@ -4,16 +4,16 @@ A universal AI execution workflow for code review, feature development, bug fixe
 
 ## Setup
 
-1. **Clone this repo** as `ai/` at your project root:
+1. **Clone this repo** as `ai-orchestrator/` at your project root:
    ```bash
    git clone https://github.com/your-username/ai-orchestrator ai-orchestrator/
    ```
    Or copy the files manually — just place them under an `ai-orchestrator/` directory at your project root.
 
-2. **`@ai-orchestrator/` is a path prefix**, not a protocol. `@ai-orchestrator/system/ORCHESTRATOR.md` means `ai/system/ORCHESTRATOR.md` relative to your project root. When you share a file reference with an AI, it resolves `@ai-orchestrator/` to the `ai-orchestrator/` folder in your repo.
+2. **`@ai-orchestrator/` is a path prefix**, not a protocol. `@ai-orchestrator/system/ORCHESTRATOR.md` means `ai-orchestrator/system/ORCHESTRATOR.md` relative to your project root. When you share a file reference with an AI, it resolves `@ai-orchestrator/` to the `ai-orchestrator/` folder in your repo.
 
 3. **Two separate folders — don't confuse them:**
-   - `ai/` — this system (orchestrator, skills, prompts). Lives alongside your codebase.
+   - `ai-orchestrator/` — this system (orchestrator, skills, prompts). Lives alongside your codebase.
    - `.ai-orchestrator/` — temporary workspaces, one per active feature. Gitignored by default.
 
 4. **Prerequisites:** Any AI assistant that can read files — Claude Code, Codex, GPT with file access, etc. No installs required beyond the markdown files.
@@ -68,7 +68,7 @@ The AI reads the system map, selects the right mode, and self-orchestrates throu
 ## File Structure
 
 ```
-ai/
+ai-orchestrator/
 ├── system/
 │   ├── ORCHESTRATOR.md          ← entry point
 │   ├── WORKSPACE.md             ← per-feature workspace contract

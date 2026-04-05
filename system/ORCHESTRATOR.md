@@ -2,7 +2,7 @@
 
 ## How to Use
 
-Point any AI at this file using `@ai-orchestrator/system/ORCHESTRATOR.md`. It is the single entry point for the entire system. Read it fully before taking any action. All other files in the `ai/` directory are referenced explicitly — the AI will know exactly which file to load at each step.
+Point any AI at this file using `@ai-orchestrator/system/ORCHESTRATOR.md`. It is the single entry point for the entire system. Read it fully before taking any action. All other files in the `ai-orchestrator/` directory are referenced explicitly — the AI will know exactly which file to load at each step.
 
 **Path convention:** `@ai-orchestrator/` is a prefix that resolves to the `ai-orchestrator/` folder in your project root — the folder where this orchestration system lives. This is separate from `.ai-orchestrator/` (with a dot), which is where per-feature workspaces are created in your project.
 

@@ -17,7 +17,7 @@ Manages per-feature temporary workspaces that enable multi-session and multi-age
 
 ## Location
 
-Lives in the **project being worked on** — not in the `ai/` system folder:
+Lives in the **project being worked on** — not in the `ai-orchestrator/` system folder:
 
 ```
 <project-root>/

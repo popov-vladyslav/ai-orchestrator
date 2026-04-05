@@ -27,7 +27,7 @@ This spec introduces a per-feature workspace — a temporary folder in the proje
         └── tasks.md
 ```
 
-`.ai-orchestrator/` lives in the project root, not in the `ai/` system folder. It is gitignored by default.
+`.ai-orchestrator/` lives in the project root, not in the `ai-orchestrator/` system folder. It is gitignored by default.
 
 ### Naming
 
