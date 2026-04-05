@@ -11,7 +11,7 @@ You are executing one ticket.
 
 ## Input
 
-* full ticket artifact from `@ai/tasks/tasks.md`: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`, `source_finding_ids[]`
+* full ticket artifact from `.ai/<slug>/tickets.md`: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`, `source_finding_ids[]`
 
 ---
 
