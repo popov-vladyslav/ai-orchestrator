@@ -73,7 +73,7 @@ ORCHESTRATOR.md (entry point)
 ├── prompts/task-executor.md         → prompts/reviewer.md
 ├── prompts/reviewer.md              → approval-template.md (checkpoint 4)
 ├── approval-template.md             → human decision
-├── tasks/tasks.md                   → prompts/reviewer.md
+├── tasks/tasks.md                   → (pointer only — active boards in .ai/<slug>/tasks.md)
 └── system/CLAUDE_CODE_INTEGRATION.md (delegation layer, applies throughout)
 ```
 
