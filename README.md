@@ -2,6 +2,39 @@
 
 A universal AI execution workflow for code review, feature development, bug fixes, and performance work. Works with Claude Code, Codex, GPT, and any AI that can read markdown files.
 
+## Setup
+
+1. **Clone this repo** as `ai/` at your project root:
+   ```bash
+   git clone https://github.com/your-username/ai-orchestrator ai/
+   ```
+   Or copy the files manually — just place them under an `ai/` directory at your project root.
+
+2. **`@ai/` is a path prefix**, not a protocol. `@ai/system/ORCHESTRATOR.md` means `ai/system/ORCHESTRATOR.md` relative to your project root. When you share a file reference with an AI, it resolves `@ai/` to the `ai/` folder in your repo.
+
+3. **Two separate folders — don't confuse them:**
+   - `ai/` — this system (orchestrator, skills, prompts). Lives alongside your codebase.
+   - `.ai/` — temporary workspaces, one per active feature. Gitignored by default.
+
+4. **Prerequisites:** Any AI assistant that can read files — Claude Code, Codex, GPT with file access, etc. No installs required beyond the markdown files.
+
+## Example
+
+```
+# In your AI chat:
+@ai/system/ORCHESTRATOR.md
+
+Review the authentication module in src/auth/ — check for security issues,
+missing error handling, and anything that doesn't match our current patterns.
+```
+
+The AI will:
+1. Create a workspace at `.ai/review-auth-module/`
+2. Load `@ai/skills/review-validator.md`, run relevant domain skills
+3. Surface findings with P0-P3 priority
+4. Ask for your approval before creating tickets
+5. Execute approved tickets and clean up the workspace when done
+
 ## How to Use
 
 Point any AI at the entry point:
@@ -74,7 +107,8 @@ your-project/
         ├── context.md    ← goal, scope, status
         ├── findings.md   ← findings and epics
         ├── tickets.md    ← approved ticket artifacts
-        └── tasks.md      ← TODO / IN PROGRESS / DONE
+        ├── tasks.md      ← TODO / IN PROGRESS / DONE
+        └── results.md    ← execution summaries and review output
 ```
 
 The workspace is created automatically, survives across sessions, and is deleted after the final approval checkpoint. `.ai/` is gitignored by default.
