@@ -12,6 +12,7 @@ You are consolidating outputs from review validation and skill execution.
 ## Input
 
 * one or more finding lists from `Review Validator` and/or `Skill Execution`
+* in BUGFIX_MODE with no skills run: a minimal Finding derived from `architect` output — use the architect's `Scope` summary as `title`, `Risks` as `evidence`, severity `medium`
 
 ---
 

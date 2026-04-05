@@ -139,6 +139,7 @@ Approval gates use `@ai/approval-template.md`. Four gates are mandatory for stan
 3. If non-trivial: load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills
 4. If non-trivial: load `@ai/system/SKILL_EXECUTOR.md` → run each selected skill
 5. Load `@ai/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
+   Note: if `architect` was used (not `review-validator`) and no skills were run, first convert the architect's `Scope` and `Risks` output into a minimal Finding artifact (`severity: medium`, `evidence: architect analysis`) before passing to aggregation.
 6. Load `@ai/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
 7. Load `@ai/skills/prioritizer.md` → assign priority and effort
 8. Load `@ai/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
