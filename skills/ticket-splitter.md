@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after `@ai/skills/epic-generator.md` (skippable if one atomic ticket remains)
-* **Uses:** epics from `@ai/skills/epic-generator.md`
-* **Outputs to:** `@ai/prompts/plan-reviewer.md` → `@ai/approval-template.md` (checkpoint 3) → `.ai/<slug>/tickets.md` and `.ai/<slug>/tasks.md` (after human approval)
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
+* **Used by:** All modes — after `@ai-orchestrator/skills/epic-generator.md` (skippable if one atomic ticket remains)
+* **Uses:** epics from `@ai-orchestrator/skills/epic-generator.md`
+* **Outputs to:** `@ai-orchestrator/prompts/plan-reviewer.md` → `@ai-orchestrator/approval-template.md` (checkpoint 3) → `.ai-orchestrator/<slug>/tickets.md` and `.ai-orchestrator/<slug>/tasks.md` (after human approval)
 
 ---
 

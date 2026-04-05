@@ -1,8 +1,8 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
 * **Used by:** ORCHESTRATOR — when delegating work to a sub-agent at any pipeline step
-* **Uses:** any step file from `@ai/skills/` or `@ai/prompts/` may be delegated
+* **Uses:** any step file from `@ai-orchestrator/skills/` or `@ai-orchestrator/prompts/` may be delegated
 * **Outputs to:** guides the Claude Code ↔ Codex hand-off throughout the workflow
 
 ---
@@ -61,7 +61,7 @@ When `Claude Code` delegates to `Codex`, include:
 * `inputs`: review text, findings, epics, tickets, or source files
 * `required_output`: expected artifact shape
 * `constraints`: do not edit code, edit only listed files, preserve behavior, and so on
-* `workspace_path`: `.ai/<slug>/` — path where Codex reads context, tickets, and writes task state
+* `workspace_path`: `.ai-orchestrator/<slug>/` — path where Codex reads context, tickets, and writes task state
 
 ---
 
@@ -72,7 +72,7 @@ When `Claude Code` delegates to `Codex`, include:
 Ask `Codex` to:
 
 * read review output
-* validate technical accuracy using `@ai/skills/review-validator.md`
+* validate technical accuracy using `@ai-orchestrator/skills/review-validator.md`
 * remove weak points
 * return normalized findings
 
@@ -80,12 +80,12 @@ Ask `Codex` to:
 
 Ask `Codex` to:
 
-* read context from `.ai/<slug>/context.md` to orient itself
-* read the full ticket artifact from `.ai/<slug>/tickets.md`
-* execute one ticket using `@ai/prompts/task-executor.md`
+* read context from `.ai-orchestrator/<slug>/context.md` to orient itself
+* read the full ticket artifact from `.ai-orchestrator/<slug>/tickets.md`
+* execute one ticket using `@ai-orchestrator/prompts/task-executor.md`
 * touch only approved files
-* update `.ai/<slug>/tasks.md` (move ticket from TODO → DONE)
-* append execution summary to `.ai/<slug>/results.md` under `## <ticket_id>`
+* update `.ai-orchestrator/<slug>/tasks.md` (move ticket from TODO → DONE)
+* append execution summary to `.ai-orchestrator/<slug>/results.md` under `## <ticket_id>`
 * return execution summary, verification, and residual risks
 
 ### Example: Folder Analysis

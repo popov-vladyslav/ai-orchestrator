@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
-* **Used by:** Ticket execution phase — all modes; may be delegated to Codex via `@ai/system/CLAUDE_CODE_INTEGRATION.md`
-* **Uses:** full ticket artifacts from `.ai/<slug>/tickets.md`; reads and updates `.ai/<slug>/tasks.md` for state tracking
-* **Outputs to:** `@ai/prompts/reviewer.md`
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
+* **Used by:** Ticket execution phase — all modes; may be delegated to Codex via `@ai-orchestrator/system/CLAUDE_CODE_INTEGRATION.md`
+* **Uses:** full ticket artifacts from `.ai-orchestrator/<slug>/tickets.md`; reads and updates `.ai-orchestrator/<slug>/tasks.md` for state tracking
+* **Outputs to:** `@ai-orchestrator/prompts/reviewer.md`
 
 ---
 
@@ -11,7 +11,7 @@ You are executing one ticket.
 
 ## Input
 
-* full ticket artifact from `.ai/<slug>/tickets.md`: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`, `source_finding_ids[]`
+* full ticket artifact from `.ai-orchestrator/<slug>/tickets.md`: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`, `source_finding_ids[]`
 
 ---
 
@@ -54,4 +54,4 @@ You are executing one ticket.
 
 ### Workspace Write
 
-After completing execution, append the Execution Summary and Risks to `.ai/<slug>/results.md` under a `## <ticket_id>` heading.
+After completing execution, append the Execution Summary and Risks to `.ai-orchestrator/<slug>/results.md` under a `## <ticket_id>` heading.

@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
-* **Used by:** `@ai/system/SKILL_DISCOVERY.md` — called once per selected skill
-* **Uses:** the externally resolved skill from `npx skills` or inline domain analysis per `@ai/skills-mapping.md` — not the orchestration files in `@ai/skills/`
-* **Outputs to:** `@ai/system/FINDINGS_AGGREGATOR.md`
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
+* **Used by:** `@ai-orchestrator/system/SKILL_DISCOVERY.md` — called once per selected skill
+* **Uses:** the externally resolved skill from `npx skills` or inline domain analysis per `@ai-orchestrator/skills-mapping.md` — not the orchestration files in `@ai-orchestrator/skills/`
+* **Outputs to:** `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`
 
 ---
 

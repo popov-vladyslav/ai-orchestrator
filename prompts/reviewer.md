@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after each ticket execution via `@ai/prompts/task-executor.md`
-* **Uses:** execution output from `@ai/prompts/task-executor.md`
-* **Outputs to:** `@ai/approval-template.md` (checkpoint 4 — before merge or final delivery)
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
+* **Used by:** All modes — after each ticket execution via `@ai-orchestrator/prompts/task-executor.md`
+* **Uses:** execution output from `@ai-orchestrator/prompts/task-executor.md`
+* **Outputs to:** `@ai-orchestrator/approval-template.md` (checkpoint 4 — before merge or final delivery)
 
 ---
 
@@ -48,7 +48,7 @@ You are a strict reviewer.
 
 ### Workspace Write
 
-After completing review, append the review output (Blockers, Issues, Verification Assessment, and decision) to `.ai/<slug>/results.md` under the existing `## <ticket_id>` heading.
+After completing review, append the review output (Blockers, Issues, Verification Assessment, and decision) to `.ai-orchestrator/<slug>/results.md` under the existing `## <ticket_id>` heading.
 
 ---
 

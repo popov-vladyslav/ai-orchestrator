@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
 * **Used by:** FEATURE_MODE (step 1), BUGFIX_MODE (step 1), PERFORMANCE_MODE (step 5 — after findings aggregation and Checkpoint 2)
 * **Uses:** nothing
-* **Outputs to:** `@ai/system/SKILL_DISCOVERY.md` (FEATURE_MODE, BUGFIX_MODE) | `@ai/skills/prioritizer.md` (PERFORMANCE_MODE — architect output serves as architectural context, not as findings; the prioritizer uses the proposed approach to align ticket priorities with architectural direction)
+* **Outputs to:** `@ai-orchestrator/system/SKILL_DISCOVERY.md` (FEATURE_MODE, BUGFIX_MODE) | `@ai-orchestrator/skills/prioritizer.md` (PERFORMANCE_MODE — architect output serves as architectural context, not as findings; the prioritizer uses the proposed approach to align ticket priorities with architectural direction)
 
 ---
 

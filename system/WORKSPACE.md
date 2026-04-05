@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
 * **Used by:** ORCHESTRATOR — Step 0 of every pipeline
 * **Uses:** nothing
-* **Outputs to:** creates `.ai/<slug>/` workspace in the project root with 5 files
+* **Outputs to:** creates `.ai-orchestrator/<slug>/` workspace in the project root with 5 files
 
 ---
 
@@ -21,7 +21,7 @@ Lives in the **project being worked on** — not in the `ai/` system folder:
 
 ```
 <project-root>/
-└── .ai/
+└── .ai-orchestrator/
     └── <feature-slug>/
         ├── context.md    ← goal, scope, status — written once, read by all agents
         ├── findings.md   ← findings and epics — written during planning
@@ -57,22 +57,22 @@ At the start of every pipeline:
 
 0. Identify the project root — the directory containing the codebase being worked on. Use `git rev-parse --show-toplevel` if inside a git repo, otherwise use the current working directory. This is provided by the orchestrator.
 1. Derive slug from the feature description
-2. Check if `.ai/<slug>/` exists in the project root
+2. Check if `.ai-orchestrator/<slug>/` exists in the project root
 3. **If exists** and `context.md` Status is `planning` or `executing` → resume — read `context.md` and continue from current status. Do not overwrite any existing files.
    - If Status is `reviewing` → resume at Checkpoint 4 review step
    - If Status is `done` → the workspace should have been deleted; treat as not exists and create fresh
-4. **If not exists** → create `.ai/<slug>/`, write `context.md` with Status `planning`, create empty `findings.md`, `tickets.md`, `tasks.md`
+4. **If not exists** → create `.ai-orchestrator/<slug>/`, write `context.md` with Status `planning`, create empty `findings.md`, `tickets.md`, `tasks.md`
 
 ### Recovery
 
-If `.ai/<slug>/` exists but `context.md` is missing or has no valid Status field:
+If `.ai-orchestrator/<slug>/` exists but `context.md` is missing or has no valid Status field:
 1. Log a warning: "workspace found but context.md is missing or invalid"
 2. Treat as not exists — re-create context.md with Status `planning`
 3. Do not overwrite `findings.md`, `tickets.md`, or `tasks.md` if they exist
 
 ### .gitignore
 
-When creating the first workspace in a project, check for `.ai/` in `.gitignore`. If missing, append `.ai/` to `.gitignore` automatically.
+When creating the first workspace in a project, check for `.ai-orchestrator/` in `.gitignore`. If missing, append `.ai-orchestrator/` to `.gitignore` automatically.
 
 ### Status Transitions
 
@@ -89,8 +89,8 @@ Update `context.md` Status field at each transition:
 
 After Checkpoint 4 is approved:
 1. Update `context.md` Status to `done`
-2. Delete `.ai/<slug>/` and all its contents
-3. If `.ai/` directory is now empty, leave it in place (the `.gitignore` entry remains useful)
+2. Delete `.ai-orchestrator/<slug>/` and all its contents
+3. If `.ai-orchestrator/` directory is now empty, leave it in place (the `.gitignore` entry remains useful)
 
 ---
 
@@ -113,11 +113,11 @@ Written once at creation by the orchestrator. Updated at each status transition.
 - **Active agent:** Claude Code | Codex | (none)
 ```
 
-Only the orchestrator (`@ai/system/ORCHESTRATOR.md`) updates `context.md`. Other agents (task-executor, reviewer) read it but do not write to it.
+Only the orchestrator (`@ai-orchestrator/system/ORCHESTRATOR.md`) updates `context.md`. Other agents (task-executor, reviewer) read it but do not write to it.
 
 ### findings.md
 
-Written by `@ai/system/FINDINGS_AGGREGATOR.md` (findings section) and `@ai/skills/epic-generator.md` (epics section). Read by `@ai/skills/prioritizer.md` and `@ai/skills/ticket-splitter.md`.
+Written by `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` (findings section) and `@ai-orchestrator/skills/epic-generator.md` (epics section). Read by `@ai-orchestrator/skills/prioritizer.md` and `@ai-orchestrator/skills/ticket-splitter.md`.
 
 ```
 # Findings
@@ -134,7 +134,7 @@ Written by `@ai/system/FINDINGS_AGGREGATOR.md` (findings section) and `@ai/skill
 
 ### tickets.md
 
-Written by the orchestrator after Checkpoint 3 approval (from ticket-splitter output). Read by `@ai/prompts/task-executor.md`.
+Written by the orchestrator after Checkpoint 3 approval (from ticket-splitter output). Read by `@ai-orchestrator/prompts/task-executor.md`.
 
 ```
 # Tickets
@@ -157,7 +157,7 @@ Ticket IDs use `T-NNN` format (T-001, T-002, etc.) to match the `tasks.md` board
 
 ### tasks.md
 
-Written by the orchestrator after Checkpoint 3. Updated by `@ai/prompts/task-executor.md` as tickets move through states. Intentionally lightweight — full artifact is in `tickets.md`.
+Written by the orchestrator after Checkpoint 3. Updated by `@ai-orchestrator/prompts/task-executor.md` as tickets move through states. Intentionally lightweight — full artifact is in `tickets.md`.
 
 ```
 # Tasks
@@ -174,7 +174,7 @@ Written by the orchestrator after Checkpoint 3. Updated by `@ai/prompts/task-exe
 
 ### results.md
 
-Appended by `@ai/prompts/task-executor.md` (execution summary) and `@ai/prompts/reviewer.md` (review output) after each ticket completes. Read by any agent resuming a session to understand what has already been executed and reviewed.
+Appended by `@ai-orchestrator/prompts/task-executor.md` (execution summary) and `@ai-orchestrator/prompts/reviewer.md` (review output) after each ticket completes. Read by any agent resuming a session to understand what has already been executed and reviewed.
 
 ```
 # Results
@@ -197,25 +197,25 @@ Appended by `@ai/prompts/task-executor.md` (execution summary) and `@ai/prompts/
 
 ## Multi-Agent Cooperation
 
-When delegating to Codex via `@ai/system/CLAUDE_CODE_INTEGRATION.md`, always pass `workspace_path` so Codex can read context and write results without needing the full conversation history.
+When delegating to Codex via `@ai-orchestrator/system/CLAUDE_CODE_INTEGRATION.md`, always pass `workspace_path` so Codex can read context and write results without needing the full conversation history.
 
 ```
 Claude Code (session 1)
-  → creates .ai/auth-feature/
+  → creates .ai-orchestrator/auth-feature/
   → runs planning pipeline
   → writes findings.md, tickets.md, tasks.md
   → delegates T-001 to Codex
 
 Codex (session 2)
-  → reads .ai/auth-feature/context.md    (orient)
-  → reads .ai/auth-feature/tickets.md    (full spec)
-  → reads .ai/auth-feature/tasks.md      (check state)
+  → reads .ai-orchestrator/auth-feature/context.md    (orient)
+  → reads .ai-orchestrator/auth-feature/tickets.md    (full spec)
+  → reads .ai-orchestrator/auth-feature/tasks.md      (check state)
   → executes T-001
   → moves T-001 from TODO → DONE in tasks.md
   → appends execution summary to results.md
 
 Claude Code (session 3)
-  → reads .ai/auth-feature/tasks.md      (resume)
+  → reads .ai-orchestrator/auth-feature/tasks.md      (resume)
   → reviews T-001 output
   → continues with T-002
 ```

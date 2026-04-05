@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after `@ai/skills/ticket-splitter.md`, before final planning approval (checkpoint 3)
-* **Uses:** epics from `@ai/skills/epic-generator.md`, tickets from `@ai/skills/ticket-splitter.md`
-* **Outputs to:** `@ai/approval-template.md` (checkpoint 3)
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
+* **Used by:** All modes — after `@ai-orchestrator/skills/ticket-splitter.md`, before final planning approval (checkpoint 3)
+* **Uses:** epics from `@ai-orchestrator/skills/epic-generator.md`, tickets from `@ai-orchestrator/skills/ticket-splitter.md`
+* **Outputs to:** `@ai-orchestrator/approval-template.md` (checkpoint 3)
 
 ---
 

@@ -2,11 +2,11 @@
 
 ## How to Use
 
-Point any AI at this file using `@ai/system/ORCHESTRATOR.md`. It is the single entry point for the entire system. Read it fully before taking any action. All other files in the `ai/` directory are referenced explicitly — the AI will know exactly which file to load at each step.
+Point any AI at this file using `@ai-orchestrator/system/ORCHESTRATOR.md`. It is the single entry point for the entire system. Read it fully before taking any action. All other files in the `ai/` directory are referenced explicitly — the AI will know exactly which file to load at each step.
 
-**Path convention:** `@ai/` is a prefix that resolves to the `ai/` folder in your project root — the folder where this orchestration system lives. This is separate from `.ai/` (with a dot), which is where per-feature workspaces are created in your project.
+**Path convention:** `@ai-orchestrator/` is a prefix that resolves to the `ai-orchestrator/` folder in your project root — the folder where this orchestration system lives. This is separate from `.ai-orchestrator/` (with a dot), which is where per-feature workspaces are created in your project.
 
-**Setup:** Clone or copy this system into an `ai/` folder at the root of the project you want to work on. Then reference `@ai/system/ORCHESTRATOR.md` from your AI assistant.
+**Setup:** Clone or copy this system into an `ai-orchestrator/` folder at the root of the project you want to work on. Then reference `@ai-orchestrator/system/ORCHESTRATOR.md` from your AI assistant.
 
 ---
 
@@ -31,22 +31,22 @@ Every runtime file in this system and when to load it (see `docs/` for non-runti
 
 | File | Role | Load when |
 | ---- | ---- | --------- |
-| `@ai/skills/architect.md` | Frames problem, defines scope, proposes approach | FEATURE_MODE or BUGFIX_MODE — first step |
-| `@ai/skills/review-validator.md` | Validates review consistency, removes weak findings | REVIEW_MODE — first step; BUGFIX_MODE — alternative to Architect |
-| `@ai/system/SKILL_DISCOVERY.md` | Selects relevant skills for the problem domain | All modes — after problem framing, or as first step in PERFORMANCE_MODE |
-| `@ai/skills-mapping.md` | Maps problem domains to skill names | Used by SKILL_DISCOVERY |
-| `@ai/system/SKILL_EXECUTOR.md` | Executes one skill and converts output to findings | Called per skill by SKILL_DISCOVERY |
-| `@ai/system/FINDINGS_AGGREGATOR.md` | Merges, deduplicates, and normalizes all findings | All modes — after all skills run |
-| `@ai/skills/prioritizer.md` | Assigns P0-P3 priority and effort estimate | All modes — after Findings Aggregation |
-| `@ai/skills/epic-generator.md` | Groups findings into independently valuable epics | All modes — after Prioritizer |
-| `@ai/skills/ticket-splitter.md` | Splits one epic into atomic implementation tickets | All modes — after Epic Generator |
-| `@ai/prompts/task-executor.md` | Executes one approved ticket | Ticket execution phase |
-| `@ai/prompts/reviewer.md` | Reviews implementation for correctness and safety | After each ticket execution |
-| `@ai/prompts/plan-reviewer.md` | Reviews plan structure before execution — checks goal alignment, ticket completeness, dependencies | All modes — after Ticket Splitter, before planning approval |
-| `@ai/approval-template.md` | Approval checkpoint format | All 4 approval gates |
-| `@ai/tasks/tasks.md` | Pointer to workspace — active boards live in `.ai/<slug>/tasks.md` in your project | Reference only |
-| `@ai/system/CLAUDE_CODE_INTEGRATION.md` | Multi-agent delegation rules for Claude Code + Codex | When delegating work to a sub-agent |
-| `@ai/system/WORKSPACE.md` | Per-feature workspace contract — naming, schemas, lifecycle, resume logic | Step 0 of every pipeline |
+| `@ai-orchestrator/skills/architect.md` | Frames problem, defines scope, proposes approach | FEATURE_MODE or BUGFIX_MODE — first step |
+| `@ai-orchestrator/skills/review-validator.md` | Validates review consistency, removes weak findings | REVIEW_MODE — first step; BUGFIX_MODE — alternative to Architect |
+| `@ai-orchestrator/system/SKILL_DISCOVERY.md` | Selects relevant skills for the problem domain | All modes — after problem framing, or as first step in PERFORMANCE_MODE |
+| `@ai-orchestrator/skills-mapping.md` | Maps problem domains to skill names | Used by SKILL_DISCOVERY |
+| `@ai-orchestrator/system/SKILL_EXECUTOR.md` | Executes one skill and converts output to findings | Called per skill by SKILL_DISCOVERY |
+| `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` | Merges, deduplicates, and normalizes all findings | All modes — after all skills run |
+| `@ai-orchestrator/skills/prioritizer.md` | Assigns P0-P3 priority and effort estimate | All modes — after Findings Aggregation |
+| `@ai-orchestrator/skills/epic-generator.md` | Groups findings into independently valuable epics | All modes — after Prioritizer |
+| `@ai-orchestrator/skills/ticket-splitter.md` | Splits one epic into atomic implementation tickets | All modes — after Epic Generator |
+| `@ai-orchestrator/prompts/task-executor.md` | Executes one approved ticket | Ticket execution phase |
+| `@ai-orchestrator/prompts/reviewer.md` | Reviews implementation for correctness and safety | After each ticket execution |
+| `@ai-orchestrator/prompts/plan-reviewer.md` | Reviews plan structure before execution — checks goal alignment, ticket completeness, dependencies | All modes — after Ticket Splitter, before planning approval |
+| `@ai-orchestrator/approval-template.md` | Approval checkpoint format | All 4 approval gates |
+| `@ai-orchestrator/tasks/tasks.md` | Pointer to workspace — active boards live in `.ai-orchestrator/<slug>/tasks.md` in your project | Reference only |
+| `@ai-orchestrator/system/CLAUDE_CODE_INTEGRATION.md` | Multi-agent delegation rules for Claude Code + Codex | When delegating work to a sub-agent |
+| `@ai-orchestrator/system/WORKSPACE.md` | Per-feature workspace contract — naming, schemas, lifecycle, resume logic | Step 0 of every pipeline |
 
 ---
 
@@ -95,91 +95,91 @@ These are context artifacts, not workflow steps. Use them as inputs when availab
 
 ## Pipeline
 
-Approval gates use `@ai/approval-template.md`. Four gates are mandatory for standard work; low-risk single-ticket changes may combine checkpoints 2 and 3. Load the template at each gate.
+Approval gates use `@ai-orchestrator/approval-template.md`. Four gates are mandatory for standard work; low-risk single-ticket changes may combine checkpoints 2 and 3. Load the template at each gate.
 
 ### REVIEW_MODE
 
-0. Load `@ai/system/WORKSPACE.md` → create or resume `.ai/<slug>/`, write `context.md`
-1. Load `@ai/skills/review-validator.md` → validate and normalize the review
-2. Load `@ai/approval-template.md` → **[Checkpoint 1: after framing]** human approval
-3. Load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai/skills-mapping.md`)
-4. Load `@ai/system/SKILL_EXECUTOR.md` → run each selected skill
-5. Load `@ai/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
-6. Load `@ai/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
-7. Load `@ai/skills/prioritizer.md` → assign priority and effort
-8. Load `@ai/skills/epic-generator.md` → group into epics
-9. Load `@ai/skills/ticket-splitter.md` → split into tickets
-10. Load `@ai/prompts/plan-reviewer.md` → review plan structure
-11. Load `@ai/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
-12. Load `@ai/prompts/task-executor.md` → execute each approved ticket
-13. Load `@ai/prompts/reviewer.md` → review implementation
-14. Load `@ai/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
-    → After approval: update `context.md` Status to `done`, delete `.ai/<slug>/`
+0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
+1. Load `@ai-orchestrator/skills/review-validator.md` → validate and normalize the review
+2. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 1: after framing]** human approval
+3. Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai-orchestrator/skills-mapping.md`)
+4. Load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
+5. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
+6. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
+7. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
+8. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics
+9. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
+10. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
+11. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
+12. Load `@ai-orchestrator/prompts/task-executor.md` → execute each approved ticket
+13. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
+14. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
+    → After approval: update `context.md` Status to `done`, delete `.ai-orchestrator/<slug>/`
 
 ### FEATURE_MODE
 
-0. Load `@ai/system/WORKSPACE.md` → create or resume `.ai/<slug>/`, write `context.md`
-1. Load `@ai/skills/architect.md` → frame problem, define scope
-2. Load `@ai/approval-template.md` → **[Checkpoint 1: after framing]** human approval
-3. Load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai/skills-mapping.md`)
-4. Load `@ai/system/SKILL_EXECUTOR.md` → run each selected skill
-5. Load `@ai/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
-6. Load `@ai/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
-7. Load `@ai/skills/prioritizer.md` → assign priority and effort
-8. Load `@ai/skills/epic-generator.md` → group into epics
-9. Load `@ai/skills/ticket-splitter.md` → split into tickets
-10. Load `@ai/prompts/plan-reviewer.md` → review plan structure
-11. Load `@ai/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
-12. Load `@ai/prompts/task-executor.md` → execute each approved ticket
-13. Load `@ai/prompts/reviewer.md` → review implementation
-14. Load `@ai/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
-    → After approval: update `context.md` Status to `done`, delete `.ai/<slug>/`
+0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
+1. Load `@ai-orchestrator/skills/architect.md` → frame problem, define scope
+2. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 1: after framing]** human approval
+3. Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai-orchestrator/skills-mapping.md`)
+4. Load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
+5. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
+6. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
+7. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
+8. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics
+9. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
+10. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
+11. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
+12. Load `@ai-orchestrator/prompts/task-executor.md` → execute each approved ticket
+13. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
+14. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
+    → After approval: update `context.md` Status to `done`, delete `.ai-orchestrator/<slug>/`
 
 ### BUGFIX_MODE
 
-0. Load `@ai/system/WORKSPACE.md` → create or resume `.ai/<slug>/`, write `context.md`
-1. Load `@ai/skills/architect.md` OR `@ai/skills/review-validator.md` → frame or validate
-2. Load `@ai/approval-template.md` → **[Checkpoint 1: after framing]** human approval
-3. If non-trivial: load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills
-4. If non-trivial: load `@ai/system/SKILL_EXECUTOR.md` → run each selected skill
-5. Load `@ai/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
+0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
+1. Load `@ai-orchestrator/skills/architect.md` OR `@ai-orchestrator/skills/review-validator.md` → frame or validate
+2. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 1: after framing]** human approval
+3. If non-trivial: load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills
+4. If non-trivial: load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
+5. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
    Note: if `architect` was used (not `review-validator`) and no skills were run, first convert the architect's `Scope` and `Risks` output into a minimal Finding artifact (`severity: medium`, `evidence: architect analysis`) before passing to aggregation.
-6. Load `@ai/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
-7. Load `@ai/skills/prioritizer.md` → assign priority and effort
-8. Load `@ai/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
-9. Load `@ai/skills/ticket-splitter.md` → split into tickets
-10. Load `@ai/prompts/plan-reviewer.md` → review plan structure
-11. Load `@ai/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
-12. Load `@ai/prompts/task-executor.md` → execute each approved ticket
-13. Load `@ai/prompts/reviewer.md` → review implementation
-14. Load `@ai/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
-    → After approval: update `context.md` Status to `done`, delete `.ai/<slug>/`
+6. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
+7. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
+8. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
+9. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
+10. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
+11. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
+12. Load `@ai-orchestrator/prompts/task-executor.md` → execute each approved ticket
+13. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
+14. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
+    → After approval: update `context.md` Status to `done`, delete `.ai-orchestrator/<slug>/`
 
 ### PERFORMANCE_MODE
 
 > Note: PERFORMANCE_MODE starts with skill discovery — there is no framing step, so Checkpoint 1 is not applicable. Checkpoints 2, 3, and 4 are mandatory.
 
-0. Load `@ai/system/WORKSPACE.md` → create or resume `.ai/<slug>/`, write `context.md`
-1. Load `@ai/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai/skills-mapping.md`)
-2. Load `@ai/system/SKILL_EXECUTOR.md` → run each selected skill
-3. Load `@ai/system/FINDINGS_AGGREGATOR.md` → merge and normalize findings
-4. Load `@ai/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
-5. Load `@ai/skills/architect.md` → propose architectural approach
-6. Load `@ai/skills/prioritizer.md` → assign priority and effort
-7. Load `@ai/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
-8. Load `@ai/skills/ticket-splitter.md` → split into tickets
-9. Load `@ai/prompts/plan-reviewer.md` → review plan structure
-10. Load `@ai/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
-11. Load `@ai/prompts/task-executor.md` → execute each approved ticket
-12. Load `@ai/prompts/reviewer.md` → review implementation
-13. Load `@ai/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
-    → After approval: update `context.md` Status to `done`, delete `.ai/<slug>/`
+0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
+1. Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai-orchestrator/skills-mapping.md`)
+2. Load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
+3. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize findings
+4. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
+5. Load `@ai-orchestrator/skills/architect.md` → propose architectural approach
+6. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
+7. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
+8. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
+9. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
+10. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
+11. Load `@ai-orchestrator/prompts/task-executor.md` → execute each approved ticket
+12. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
+13. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
+    → After approval: update `context.md` Status to `done`, delete `.ai-orchestrator/<slug>/`
 
 ---
 
 ## Multi-Agent Model
 
-See `@ai/system/CLAUDE_CODE_INTEGRATION.md` for the full delegation contract.
+See `@ai-orchestrator/system/CLAUDE_CODE_INTEGRATION.md` for the full delegation contract.
 
 Recommended setup:
 
@@ -204,23 +204,23 @@ Delegation rules:
 
 Skip steps only when the reason is explicit in the output.
 
-* **Skip `Architect`** if the input already defines scope, constraints, and success criteria. Pass the input directly to `@ai/system/SKILL_DISCOVERY.md`.
-* **Skip `Review Validator`** if the review has already been de-duplicated and prioritized. Pass findings directly to `@ai/system/FINDINGS_AGGREGATOR.md`.
-* **Skip `Skill Discovery`** only for trivial, single-surface changes with no domain ambiguity. Proceed directly to `@ai/system/FINDINGS_AGGREGATOR.md` with any available findings.
-* **Skip `Epic Generator`** when the work fits one independently shippable task group. Pass the prioritized findings directly to `@ai/skills/ticket-splitter.md` — treat the top finding group as an implicit single epic.
-* **Skip `Ticket Splitter`** when exactly one atomic ticket remains after epic generation. Pass the epic directly to `@ai/prompts/plan-reviewer.md` — treat the epic goal as the single ticket goal.
+* **Skip `Architect`** if the input already defines scope, constraints, and success criteria. Pass the input directly to `@ai-orchestrator/system/SKILL_DISCOVERY.md`.
+* **Skip `Review Validator`** if the review has already been de-duplicated and prioritized. Pass findings directly to `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`.
+* **Skip `Skill Discovery`** only for trivial, single-surface changes with no domain ambiguity. Proceed directly to `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` with any available findings.
+* **Skip `Epic Generator`** when the work fits one independently shippable task group. Pass the prioritized findings directly to `@ai-orchestrator/skills/ticket-splitter.md` — treat the top finding group as an implicit single epic.
+* **Skip `Ticket Splitter`** when exactly one atomic ticket remains after epic generation. Pass the epic directly to `@ai-orchestrator/prompts/plan-reviewer.md` — treat the epic goal as the single ticket goal.
 
 ---
 
 ## Skill Discovery
 
-Load `@ai/system/SKILL_DISCOVERY.md` to run this step.
+Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` to run this step.
 
 It will:
 
 * identify the relevant domain
-* consult `@ai/skills-mapping.md` for auto-selection rules
-* run `npx skills find <query>` for external skills (query strings defined in `@ai/skills-mapping.md`)
+* consult `@ai-orchestrator/skills-mapping.md` for auto-selection rules
+* run `npx skills find <query>` for external skills (query strings defined in `@ai-orchestrator/skills-mapping.md`)
 * select the minimum useful skill set
 * explain why each selected skill is needed
 
@@ -230,7 +230,7 @@ Skill Discovery is mandatory for non-trivial work.
 
 ## Skill Triggers
 
-Trigger skills automatically when relevant. See `@ai/skills-mapping.md` for full domain → skill rules.
+Trigger skills automatically when relevant. See `@ai-orchestrator/skills-mapping.md` for full domain → skill rules.
 
 | Condition           | Skill Category               |
 | ------------------- | ---------------------------- |
@@ -288,7 +288,7 @@ Every phase must emit structured artifacts using stable identifiers.
 
 ## Findings Aggregation
 
-Load `@ai/system/FINDINGS_AGGREGATOR.md` to run this step.
+Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` to run this step.
 
 After running one or more skills:
 
@@ -317,7 +317,7 @@ Do not force parallelization. Serial work is valid when dependencies require it.
 
 ## Human Approval
 
-Load `@ai/approval-template.md` at each checkpoint.
+Load `@ai-orchestrator/approval-template.md` at each checkpoint.
 
 Approval is mandatory at these checkpoints:
 
@@ -332,7 +332,7 @@ Low-risk single-ticket changes may combine checkpoints 2 and 3.
 
 ## Review Requirements
 
-Load `@ai/prompts/reviewer.md` after every ticket implementation.
+Load `@ai-orchestrator/prompts/reviewer.md` after every ticket implementation.
 
 Every implemented ticket must be reviewed for:
 
@@ -347,10 +347,10 @@ Every implemented ticket must be reviewed for:
 
 ## Task Execution
 
-Load `@ai/prompts/task-executor.md` to execute an approved ticket.
-Track progress in `.ai/<slug>/tasks.md` in your project (see `@ai/system/WORKSPACE.md`).
+Load `@ai-orchestrator/prompts/task-executor.md` to execute an approved ticket.
+Track progress in `.ai-orchestrator/<slug>/tasks.md` in your project (see `@ai-orchestrator/system/WORKSPACE.md`).
 
-Before execution begins, write the full approved ticket artifact (all fields: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`) into `.ai/<slug>/tickets.md`. Add the ticket id and title to the TODO section of `.ai/<slug>/tasks.md`. The executor reads the full artifact from `tickets.md` and tracks state in `tasks.md`.
+Before execution begins, write the full approved ticket artifact (all fields: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`) into `.ai-orchestrator/<slug>/tickets.md`. Add the ticket id and title to the TODO section of `.ai-orchestrator/<slug>/tasks.md`. The executor reads the full artifact from `tickets.md` and tracks state in `tasks.md`.
 
 ---
 

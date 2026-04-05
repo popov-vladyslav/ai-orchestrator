@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
-* **Used by:** `@ai/system/SKILL_DISCOVERY.md` — consulted during domain identification
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
+* **Used by:** `@ai-orchestrator/system/SKILL_DISCOVERY.md` — consulted during domain identification
 * **Uses:** nothing
-* **Outputs to:** `@ai/system/SKILL_EXECUTOR.md` (via skill selection in SKILL_DISCOVERY)
+* **Outputs to:** `@ai-orchestrator/system/SKILL_EXECUTOR.md` (via skill selection in SKILL_DISCOVERY)
 
 ---
 

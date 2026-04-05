@@ -7,7 +7,7 @@
 
 ## Context
 
-The orchestration system currently uses a single `@ai/tasks/tasks.md` file as the execution board. This breaks down when work spans multiple sessions or multiple agents (Claude + Codex): a new session has no context on what was planned, and Codex has no shared location to read tickets from or write results to.
+The orchestration system currently uses a single `@ai-orchestrator/tasks/tasks.md` file as the execution board. This breaks down when work spans multiple sessions or multiple agents (Claude + Codex): a new session has no context on what was planned, and Codex has no shared location to read tickets from or write results to.
 
 This spec introduces a per-feature workspace — a temporary folder in the project being worked on — that gives all agents a shared, persistent context for the duration of a feature. It is created automatically, used throughout the pipeline, and deleted after the final approval checkpoint.
 
@@ -19,7 +19,7 @@ This spec introduces a per-feature workspace — a temporary folder in the proje
 
 ```
 <project-root>/
-└── .ai/
+└── .ai-orchestrator/
     └── <feature-slug>/
         ├── context.md
         ├── findings.md
@@ -27,7 +27,7 @@ This spec introduces a per-feature workspace — a temporary folder in the proje
         └── tasks.md
 ```
 
-`.ai/` lives in the project root, not in the `ai/` system folder. It is gitignored by default.
+`.ai-orchestrator/` lives in the project root, not in the `ai/` system folder. It is gitignored by default.
 
 ### Naming
 
@@ -38,15 +38,15 @@ The orchestrator derives a slug from the feature description:
 
 ### Lifecycle
 
-1. Orchestrator receives new work → checks if `.ai/<slug>/` already exists
+1. Orchestrator receives new work → checks if `.ai-orchestrator/<slug>/` already exists
 2. If exists and `context.md` Status is `planning` or `executing` → **resume** (do not overwrite)
 3. If not exists → create folder, write `context.md`, create empty `findings.md`, `tickets.md`, `tasks.md`
 4. Pipeline runs, agents read/write workspace files at each phase
-5. After Checkpoint 4 approved → orchestrator deletes `.ai/<slug>/`
+5. After Checkpoint 4 approved → orchestrator deletes `.ai-orchestrator/<slug>/`
 
 ### `.gitignore` handling
 
-When creating the first workspace in a project, the orchestrator checks for `.ai/` in the project's `.gitignore`. If missing, it appends `.ai/` automatically.
+When creating the first workspace in a project, the orchestrator checks for `.ai-orchestrator/` in the project's `.gitignore`. If missing, it appends `.ai-orchestrator/` automatically.
 
 ---
 
@@ -138,42 +138,42 @@ Defines workspace contract, naming convention, file schemas, lifecycle rules, re
 
 ### `system/ORCHESTRATOR.md`
 
-- Add `@ai/system/WORKSPACE.md` to System Map table
-- Update `@ai/tasks/tasks.md` row to note it is now a pointer
+- Add `@ai-orchestrator/system/WORKSPACE.md` to System Map table
+- Update `@ai-orchestrator/tasks/tasks.md` row to note it is now a pointer
 - Add **Step 0** to all 4 pipelines:
   ```
-  0. Load @ai/system/WORKSPACE.md → create or resume .ai/<slug>/
+  0. Load @ai-orchestrator/system/WORKSPACE.md → create or resume .ai-orchestrator/<slug>/
   ```
 - Add cleanup step after Checkpoint 4 in all pipelines:
   ```
-  → delete .ai/<slug>/ after human approval
+  → delete .ai-orchestrator/<slug>/ after human approval
   ```
 - Update Task Execution section to reference workspace files
 
 ### `system/FINDINGS_AGGREGATOR.md`
 
-Add to System Context: writes normalized findings to `.ai/<slug>/findings.md`.
+Add to System Context: writes normalized findings to `.ai-orchestrator/<slug>/findings.md`.
 
 ### `skills/epic-generator.md`
 
-Add to System Context: writes epic artifacts to epics section of `.ai/<slug>/findings.md`.
+Add to System Context: writes epic artifacts to epics section of `.ai-orchestrator/<slug>/findings.md`.
 
 ### `skills/ticket-splitter.md`
 
-Update System Context `Outputs to`: writes ticket artifacts to `.ai/<slug>/tickets.md` after Checkpoint 3.
+Update System Context `Outputs to`: writes ticket artifacts to `.ai-orchestrator/<slug>/tickets.md` after Checkpoint 3.
 
 ### `prompts/task-executor.md`
 
-Update `Uses`: reads full ticket artifacts from `.ai/<slug>/tickets.md`, updates `.ai/<slug>/tasks.md`.
+Update `Uses`: reads full ticket artifacts from `.ai-orchestrator/<slug>/tickets.md`, updates `.ai-orchestrator/<slug>/tasks.md`.
 
 ### `tasks/tasks.md`
 
-Replace content with pointer: active workspaces live in `.ai/<slug>/tasks.md` in your project. See `@ai/system/WORKSPACE.md`.
+Replace content with pointer: active workspaces live in `.ai-orchestrator/<slug>/tasks.md` in your project. See `@ai-orchestrator/system/WORKSPACE.md`.
 
 ### `system/CLAUDE_CODE_INTEGRATION.md`
 
 Add `workspace_path` to the Delegation Contract payload:
-- `workspace_path`: `.ai/<slug>/` — the path where Codex should read context, tickets, and write results.
+- `workspace_path`: `.ai-orchestrator/<slug>/` — the path where Codex should read context, tickets, and write results.
 
 ---
 
@@ -181,20 +181,20 @@ Add `workspace_path` to the Delegation Contract payload:
 
 ```
 Claude Code (session 1)
-  → creates .ai/auth-feature/
+  → creates .ai-orchestrator/auth-feature/
   → runs planning pipeline
   → writes findings.md, tickets.md, tasks.md
   → requests Codex to execute T-001
 
 Codex (session 2)
-  → reads .ai/auth-feature/context.md    (orient)
-  → reads .ai/auth-feature/tickets.md    (get full spec)
-  → reads .ai/auth-feature/tasks.md      (check state)
+  → reads .ai-orchestrator/auth-feature/context.md    (orient)
+  → reads .ai-orchestrator/auth-feature/tickets.md    (get full spec)
+  → reads .ai-orchestrator/auth-feature/tasks.md      (check state)
   → executes T-001
   → moves T-001 from TODO → DONE in tasks.md
 
 Claude Code (session 3)
-  → reads .ai/auth-feature/tasks.md      (resume)
+  → reads .ai-orchestrator/auth-feature/tasks.md      (resume)
   → reviews T-001 output
   → continues with T-002
 ```
@@ -206,5 +206,5 @@ Claude Code (session 3)
 After Checkpoint 4 (human approves execution and review):
 
 1. Orchestrator updates `context.md` Status to `done`
-2. Orchestrator deletes `.ai/<slug>/`
-3. If `.ai/` is now empty, it may be left in place (the `.gitignore` entry remains useful)
+2. Orchestrator deletes `.ai-orchestrator/<slug>/`
+3. If `.ai-orchestrator/` is now empty, it may be left in place (the `.gitignore` entry remains useful)

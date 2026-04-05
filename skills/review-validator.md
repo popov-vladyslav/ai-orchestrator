@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
 * **Used by:** REVIEW_MODE (step 1), BUGFIX_MODE (step 1 — alternative to Architect)
 * **Uses:** nothing
-* **Outputs to:** `@ai/system/FINDINGS_AGGREGATOR.md`
+* **Outputs to:** `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`
 
 ---
 

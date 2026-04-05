@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after `@ai/system/FINDINGS_AGGREGATOR.md`
-* **Uses:** findings from `@ai/system/FINDINGS_AGGREGATOR.md`; in PERFORMANCE_MODE also accepts architectural context from `@ai/skills/architect.md` (proposed approach used to align priorities, not treated as a finding)
-* **Outputs to:** `@ai/skills/epic-generator.md`
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
+* **Used by:** All modes — after `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`
+* **Uses:** findings from `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`; in PERFORMANCE_MODE also accepts architectural context from `@ai-orchestrator/skills/architect.md` (proposed approach used to align priorities, not treated as a finding)
+* **Outputs to:** `@ai-orchestrator/skills/epic-generator.md`
 
 ---
 

@@ -1,9 +1,9 @@
 ## System Context
 
-* **Part of:** `@ai/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after `@ai/skills/prioritizer.md` (skippable if work fits one group)
-* **Uses:** prioritized findings from `@ai/skills/prioritizer.md`
-* **Outputs to:** `@ai/skills/ticket-splitter.md`; writes epic artifacts to `.ai/<slug>/findings.md`
+* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
+* **Used by:** All modes — after `@ai-orchestrator/skills/prioritizer.md` (skippable if work fits one group)
+* **Uses:** prioritized findings from `@ai-orchestrator/skills/prioritizer.md`
+* **Outputs to:** `@ai-orchestrator/skills/ticket-splitter.md`; writes epic artifacts to `.ai-orchestrator/<slug>/findings.md`
 
 ---
 

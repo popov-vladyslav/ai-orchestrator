@@ -6,15 +6,15 @@ A universal AI execution workflow for code review, feature development, bug fixe
 
 1. **Clone this repo** as `ai/` at your project root:
    ```bash
-   git clone https://github.com/your-username/ai-orchestrator ai/
+   git clone https://github.com/your-username/ai-orchestrator ai-orchestrator/
    ```
-   Or copy the files manually — just place them under an `ai/` directory at your project root.
+   Or copy the files manually — just place them under an `ai-orchestrator/` directory at your project root.
 
-2. **`@ai/` is a path prefix**, not a protocol. `@ai/system/ORCHESTRATOR.md` means `ai/system/ORCHESTRATOR.md` relative to your project root. When you share a file reference with an AI, it resolves `@ai/` to the `ai/` folder in your repo.
+2. **`@ai-orchestrator/` is a path prefix**, not a protocol. `@ai-orchestrator/system/ORCHESTRATOR.md` means `ai/system/ORCHESTRATOR.md` relative to your project root. When you share a file reference with an AI, it resolves `@ai-orchestrator/` to the `ai-orchestrator/` folder in your repo.
 
 3. **Two separate folders — don't confuse them:**
    - `ai/` — this system (orchestrator, skills, prompts). Lives alongside your codebase.
-   - `.ai/` — temporary workspaces, one per active feature. Gitignored by default.
+   - `.ai-orchestrator/` — temporary workspaces, one per active feature. Gitignored by default.
 
 4. **Prerequisites:** Any AI assistant that can read files — Claude Code, Codex, GPT with file access, etc. No installs required beyond the markdown files.
 
@@ -22,15 +22,15 @@ A universal AI execution workflow for code review, feature development, bug fixe
 
 ```
 # In your AI chat:
-@ai/system/ORCHESTRATOR.md
+@ai-orchestrator/system/ORCHESTRATOR.md
 
 Review the authentication module in src/auth/ — check for security issues,
 missing error handling, and anything that doesn't match our current patterns.
 ```
 
 The AI will:
-1. Create a workspace at `.ai/review-auth-module/`
-2. Load `@ai/skills/review-validator.md`, run relevant domain skills
+1. Create a workspace at `.ai-orchestrator/review-auth-module/`
+2. Load `@ai-orchestrator/skills/review-validator.md`, run relevant domain skills
 3. Surface findings with P0-P3 priority
 4. Ask for your approval before creating tickets
 5. Execute approved tickets and clean up the workspace when done
@@ -40,7 +40,7 @@ The AI will:
 Point any AI at the entry point:
 
 ```
-@ai/system/ORCHESTRATOR.md
+@ai-orchestrator/system/ORCHESTRATOR.md
 ```
 
 The AI reads the system map, selects the right mode, and self-orchestrates through the full pipeline — loading the appropriate files at each step, pausing for human approval at defined checkpoints, and tracking work in a per-feature workspace.
@@ -94,7 +94,7 @@ ai/
 
 ## Multi-Agent Support
 
-Claude Code acts as the orchestrator. Codex (or any other agent) can be delegated bounded subtasks — reviewing a folder, executing a single ticket, validating output. All agents cooperate through a shared per-feature workspace at `.ai/<feature-slug>/` in your project.
+Claude Code acts as the orchestrator. Codex (or any other agent) can be delegated bounded subtasks — reviewing a folder, executing a single ticket, validating output. All agents cooperate through a shared per-feature workspace at `.ai-orchestrator/<feature-slug>/` in your project.
 
 ## Per-Feature Workspace
 
@@ -102,7 +102,7 @@ Each feature gets a temporary workspace in your project:
 
 ```
 your-project/
-└── .ai/
+└── .ai-orchestrator/
     └── add-oauth-login/
         ├── context.md    ← goal, scope, status
         ├── findings.md   ← findings and epics
@@ -111,7 +111,7 @@ your-project/
         └── results.md    ← execution summaries and review output
 ```
 
-The workspace is created automatically, survives across sessions, and is deleted after the final approval checkpoint. `.ai/` is gitignored by default.
+The workspace is created automatically, survives across sessions, and is deleted after the final approval checkpoint. `.ai-orchestrator/` is gitignored by default.
 
 ## Docs
 

@@ -21,14 +21,14 @@ Previously, `ORCHESTRATOR.md` described the workflow in abstract terms but did n
 
 Every file in `ai/` participates in a two-way reference graph:
 
-- **ORCHESTRATOR.md → sub-files:** System Map table lists every runtime file with its role and when to load it. Each pipeline step has explicit `→ load @ai/...` annotations.
+- **ORCHESTRATOR.md → sub-files:** System Map table lists every runtime file with its role and when to load it. Each pipeline step has explicit `→ load @ai-orchestrator/...` annotations.
 - **Sub-files → ORCHESTRATOR.md and peers:** Every file has a `## System Context` header with `Part of`, `Used by`, `Uses`, and `Outputs to` fields.
 
 This means any file loaded in isolation — by a user, an AI, or a plugin — can orient itself and navigate to the right next step.
 
 ### Why bidirectional over one-way hub
 
-A one-way hub (ORCHESTRATOR → files only) breaks when a sub-file is loaded directly (e.g. `@ai/skills/architect.md` without the orchestrator). With bidirectional references, each file carries enough context to work independently and still plug back into the full pipeline.
+A one-way hub (ORCHESTRATOR → files only) breaks when a sub-file is loaded directly (e.g. `@ai-orchestrator/skills/architect.md` without the orchestrator). With bidirectional references, each file carries enough context to work independently and still plug back into the full pipeline.
 
 ---
 
@@ -73,7 +73,7 @@ ORCHESTRATOR.md (entry point)
 ├── prompts/task-executor.md         → prompts/reviewer.md
 ├── prompts/reviewer.md              → approval-template.md (checkpoint 4)
 ├── approval-template.md             → human decision
-├── tasks/tasks.md                   → (pointer only — active boards in .ai/<slug>/tasks.md)
+├── tasks/tasks.md                   → (pointer only — active boards in .ai-orchestrator/<slug>/tasks.md)
 └── system/CLAUDE_CODE_INTEGRATION.md (delegation layer, applies throughout)
 ```
 
@@ -84,14 +84,14 @@ ORCHESTRATOR.md (entry point)
 Point any AI at the system with:
 
 ```
-@ai/system/ORCHESTRATOR.md
+@ai-orchestrator/system/ORCHESTRATOR.md
 ```
 
 It will:
 1. Read the System Map to understand all available files
 2. Infer the execution mode from your request
 3. Load files step by step as the pipeline progresses
-4. Present approval checkpoints using `@ai/approval-template.md`
+4. Present approval checkpoints using `@ai-orchestrator/approval-template.md`
 5. Track execution in the per-feature workspace (see workspace spec)
 
 ---
