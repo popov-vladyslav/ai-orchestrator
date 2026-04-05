@@ -2,11 +2,11 @@
 
 ## How to Use
 
-Point any AI at this file using `@ai-orchestrator/system/ORCHESTRATOR.md`. It is the single entry point for the entire system. Read it fully before taking any action. All other files in the `ai-orchestrator/` directory are referenced explicitly — the AI will know exactly which file to load at each step.
+Point any AI at this file using its absolute path on your machine (e.g. `/Users/you/ai-orchestrator/system/ORCHESTRATOR.md`). It is the single entry point for the entire system. Read it fully before taking any action. All other files in the system are referenced explicitly — the AI will know exactly which file to load at each step.
 
-**Path convention:** `@ai-orchestrator/` is a prefix that resolves to the `ai-orchestrator/` folder in your project root — the folder where this orchestration system lives. This is separate from `.ai-orchestrator/` (with a dot), which is where per-feature workspaces are created in your project.
+**Path convention:** `@ai-orchestrator/` is a self-referential prefix used internally between files — it resolves relative to wherever you installed this tool. You never type it yourself; just use the absolute path to this file when starting a session.
 
-**Setup:** Clone or copy this system into an `ai-orchestrator/` folder at the root of the project you want to work on. Then reference `@ai-orchestrator/system/ORCHESTRATOR.md` from your AI assistant.
+**Setup:** Clone this repo once to a stable location on your machine (e.g. `~/ai-orchestrator/`). Point your AI at the absolute path to this file at the start of any session. The tool works across all your projects without being copied into each one.
 
 ---
 

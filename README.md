@@ -4,25 +4,31 @@ A universal AI execution workflow for code review, feature development, bug fixe
 
 ## Setup
 
-1. **Clone this repo** as `ai-orchestrator/` at your project root:
+1. **Clone this repo once** to a stable location on your machine:
    ```bash
-   git clone https://github.com/your-username/ai-orchestrator ai-orchestrator/
+   git clone https://github.com/your-username/ai-orchestrator ~/ai-orchestrator
    ```
-   Or copy the files manually — just place them under an `ai-orchestrator/` directory at your project root.
+   Or anywhere you prefer — `~/Documents/ai-orchestrator`, `/opt/ai-orchestrator`, etc. You install it once and use it across all your projects.
 
-2. **`@ai-orchestrator/` is a path prefix**, not a protocol. `@ai-orchestrator/system/ORCHESTRATOR.md` means `ai-orchestrator/system/ORCHESTRATOR.md` relative to your project root. When you share a file reference with an AI, it resolves `@ai-orchestrator/` to the `ai-orchestrator/` folder in your repo.
+2. **Point your AI at the entry point** using the absolute path to `ORCHESTRATOR.md`:
+   ```
+   /Users/you/ai-orchestrator/system/ORCHESTRATOR.md
+   ```
+   In Claude Code: `@/Users/you/ai-orchestrator/system/ORCHESTRATOR.md`
 
-3. **Two separate folders — don't confuse them:**
-   - `ai-orchestrator/` — this system (orchestrator, skills, prompts). Lives alongside your codebase.
-   - `.ai-orchestrator/` — temporary workspaces, one per active feature. Gitignored by default.
+3. **`@ai-orchestrator/` in the system files** is a self-referential prefix — it resolves relative to wherever you installed the tool. You never need to type it yourself; it's used internally between files so the AI knows how to load each step.
 
-4. **Prerequisites:** Any AI assistant that can read files — Claude Code, Codex, GPT with file access, etc. No installs required beyond the markdown files.
+4. **Two separate folders — don't confuse them:**
+   - `ai-orchestrator/` — this tool. Lives once on your machine, outside any project.
+   - `.ai-orchestrator/` — temporary workspaces, one per active feature, inside each project. Gitignored by default.
+
+5. **Prerequisites:** Any AI assistant that can read files — Claude Code, Codex, GPT with file access, etc. No installs required beyond the markdown files.
 
 ## Example
 
 ```
-# In your AI chat:
-@ai-orchestrator/system/ORCHESTRATOR.md
+# In Claude Code (adjust path to your install location):
+@/Users/you/ai-orchestrator/system/ORCHESTRATOR.md
 
 Review the authentication module in src/auth/ — check for security issues,
 missing error handling, and anything that doesn't match our current patterns.
@@ -37,10 +43,10 @@ The AI will:
 
 ## How to Use
 
-Point any AI at the entry point:
+Point any AI at the entry point using the absolute path to `ORCHESTRATOR.md` on your machine:
 
 ```
-@ai-orchestrator/system/ORCHESTRATOR.md
+/Users/you/ai-orchestrator/system/ORCHESTRATOR.md
 ```
 
 The AI reads the system map, selects the right mode, and self-orchestrates through the full pipeline — loading the appropriate files at each step, pausing for human approval at defined checkpoints, and tracking work in a per-feature workspace.
