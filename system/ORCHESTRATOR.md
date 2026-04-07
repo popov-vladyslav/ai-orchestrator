@@ -27,7 +27,7 @@ Works with: Codex, Claude, GPT, etc.
 
 ## System Map
 
-Every runtime file in this system and when to load it (see `docs/` for non-runtime specs and usage examples):
+Every runtime file in this system and when to load it:
 
 | File | Role | Load when |
 | ---- | ---- | --------- |
@@ -44,8 +44,7 @@ Every runtime file in this system and when to load it (see `docs/` for non-runti
 | `@ai-orchestrator/prompts/reviewer.md` | Reviews implementation for correctness and safety | After each ticket execution |
 | `@ai-orchestrator/prompts/plan-reviewer.md` | Reviews plan structure before execution — checks goal alignment, ticket completeness, dependencies | All modes — after Ticket Splitter, before planning approval |
 | `@ai-orchestrator/approval-template.md` | Approval checkpoint format | All 4 approval gates |
-| `@ai-orchestrator/tasks/tasks.md` | Pointer to workspace — active boards live in `.ai-orchestrator/<slug>/tasks.md` in your project | Reference only |
-| `@ai-orchestrator/system/CLAUDE_CODE_INTEGRATION.md` | Multi-agent delegation rules for Claude Code + Codex | When delegating work to a sub-agent |
+| `@ai-orchestrator/system/DELEGATION.md` | Multi-agent delegation rules (orchestrator + specialist) | When delegating work to a sub-agent |
 | `@ai-orchestrator/system/WORKSPACE.md` | Per-feature workspace contract — naming, schemas, lifecycle, resume logic | Step 0 of every pipeline |
 
 ---
@@ -95,101 +94,104 @@ These are context artifacts, not workflow steps. Use them as inputs when availab
 
 ## Pipeline
 
-Approval gates use `@ai-orchestrator/approval-template.md`. Four gates are mandatory for standard work; low-risk single-ticket changes may combine checkpoints 2 and 3. Load the template at each gate.
+Approval gates use `@ai-orchestrator/approval-template.md`. Load the template at each gate.
 
-### REVIEW_MODE
+### Step 0: Workspace (all modes)
 
-0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
-1. Load `@ai-orchestrator/skills/review-validator.md` → validate and normalize the review
-2. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 1: after framing]** human approval
-3. Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai-orchestrator/skills-mapping.md`)
-4. Load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
-5. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
-6. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
-7. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
-8. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics
-9. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
-10. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
-11. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
-12. Load `@ai-orchestrator/prompts/task-executor.md` → execute each approved ticket
-13. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
-14. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
-    → After approval: update `context.md` Status to `done`, delete `.ai-orchestrator/<slug>/`
+Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
 
-### FEATURE_MODE
+### Phase 1: Framing (mode-specific)
 
-0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
-1. Load `@ai-orchestrator/skills/architect.md` → frame problem, define scope
-2. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 1: after framing]** human approval
-3. Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai-orchestrator/skills-mapping.md`)
-4. Load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
-5. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
-6. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
-7. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
-8. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics
-9. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
-10. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
-11. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
-12. Load `@ai-orchestrator/prompts/task-executor.md` → execute each approved ticket
-13. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
-14. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
-    → After approval: update `context.md` Status to `done`, delete `.ai-orchestrator/<slug>/`
+| Mode | Load | Notes |
+| ---- | ---- | ----- |
+| `REVIEW_MODE` | `@ai-orchestrator/skills/review-validator.md` | Validate and normalize the review |
+| `FEATURE_MODE` | `@ai-orchestrator/skills/architect.md` | Frame problem, define scope |
+| `BUGFIX_MODE` | `@ai-orchestrator/skills/architect.md` OR `@ai-orchestrator/skills/review-validator.md` | Choose based on input type |
+| `PERFORMANCE_MODE` | *(skip — no framing)* | Jump directly to Phase 2 |
 
-### BUGFIX_MODE
+→ **[Checkpoint 1: after framing]** human approval (skip for PERFORMANCE_MODE)
 
-0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
-1. Load `@ai-orchestrator/skills/architect.md` OR `@ai-orchestrator/skills/review-validator.md` → frame or validate
-2. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 1: after framing]** human approval
-3. If non-trivial: load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills
-4. If non-trivial: load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
-5. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
-   Note: if `architect` was used (not `review-validator`) and no skills were run, first convert the architect's `Scope` and `Risks` output into a minimal Finding artifact (`severity: medium`, `evidence: architect analysis`) before passing to aggregation.
-6. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
-7. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
-8. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
-9. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
-10. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
-11. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
-12. Load `@ai-orchestrator/prompts/task-executor.md` → execute each approved ticket
-13. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
-14. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
-    → After approval: update `context.md` Status to `done`, delete `.ai-orchestrator/<slug>/`
+### Phase 2: Analysis (all modes)
 
-### PERFORMANCE_MODE
-
-> Note: PERFORMANCE_MODE starts with skill discovery — there is no framing step, so Checkpoint 1 is not applicable. Checkpoints 2, 3, and 4 are mandatory.
-
-0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrator/<slug>/`, write `context.md`
 1. Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai-orchestrator/skills-mapping.md`)
 2. Load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
-3. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize findings
-4. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 2: after normalized findings]** human approval
-5. Load `@ai-orchestrator/skills/architect.md` → propose architectural approach
-6. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
-7. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
-8. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
-9. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
-10. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 3: after planning artifacts]** human approval
-11. Load `@ai-orchestrator/prompts/task-executor.md` → execute each approved ticket
-12. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
-13. Load `@ai-orchestrator/approval-template.md` → **[Checkpoint 4: after execution and review]** before merge or final delivery
-    → After approval: update `context.md` Status to `done`, delete `.ai-orchestrator/<slug>/`
+3. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
+
+**PERFORMANCE_MODE only:** after aggregation, load `@ai-orchestrator/skills/architect.md` → propose architectural approach (used as directional context for prioritization, not as a finding).
+
+**BUGFIX_MODE note:** if `architect` was used in Phase 1 and no skills were run, convert the architect's `Scope` and `Risks` output into a minimal Finding artifact (`severity: medium`, `evidence: architect analysis`) before passing to aggregation.
+
+→ **[Checkpoint 2: after normalized findings]** human approval
+
+### Phase 3: Planning (all modes)
+
+1. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
+2. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
+3. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
+4. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
+   - If plan-reviewer outputs REVISE: return concerns to ticket-splitter, re-split affected tickets, re-run plan-reviewer (max 1 revision cycle). If still blocked: present at Checkpoint 3 with blocker flag.
+
+→ **[Checkpoint 3: after planning artifacts]** human approval
+
+After approval: write full ticket artifacts to `.ai-orchestrator/<slug>/tickets.md`. Add ticket ids to the TODO section of `.ai-orchestrator/<slug>/tasks.md`.
+
+### Phase 4: Execution (all modes)
+
+For each approved ticket:
+
+1. Load `@ai-orchestrator/prompts/task-executor.md` → execute the ticket
+2. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
+   - If reviewer outputs REVISE: log revision reason to `results.md`, re-execute with reviewer feedback as additional input, re-review (max 2 revision cycles). If still blocked after 2 cycles: escalate to Checkpoint 4 with blocker flag.
+   - If reviewer outputs APPROVE: continue to next ticket.
+
+→ **[Quality Gate: after all tickets executed and reviewed]**
+
+Run the project's quality checks before presenting Checkpoint 4. Detect and run in order:
+
+1. **Pre-commit hook** — if `.husky/pre-commit`, `.git/hooks/pre-commit`, or `lefthook.yml` exists, run it (e.g., `npx lefthook run pre-commit` or the hook script directly). Do not actually commit.
+2. **Pre-push hook** — if `.husky/pre-push`, `.git/hooks/pre-push`, or `lefthook.yml` exists, run it. Do not actually push.
+3. **Fallback** — if no hooks are detected, run these checks individually:
+   - Lint: `yarn lint` / `npm run lint` / project equivalent
+   - TypeScript: `yarn typecheck` / `npx tsc --noEmit`
+   - Tests: `yarn test` (for affected files if possible, e.g., `yarn test --changedSince=HEAD`)
+
+If quality checks fail:
+- Fix lint/formatting issues automatically when safe (e.g., `yarn lint:fix`)
+- For type errors or test failures: log the failure, attempt to fix within the ticket scope, re-run checks (max 2 fix cycles)
+- If still failing after 2 cycles: present at Checkpoint 4 with blocker flag and the failing output
+
+Only present Checkpoint 4 after quality checks pass (or are escalated as blockers).
+
+→ **[Checkpoint 4: after execution, review, and quality gate]** before merge or final delivery
+  → After approval: update `context.md` Status to `done`, ask the user whether to keep or delete `.ai-orchestrator/<slug>/`
+
+### Lightweight Path
+
+For single-surface changes with clear scope and no domain ambiguity, use this shortened pipeline:
+
+0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume workspace
+1. Phase 1: Framing (as above, based on mode)
+   → **[Checkpoint 1: after framing]**
+2. Skip Skill Discovery and Epic Generator
+3. Load `@ai-orchestrator/skills/ticket-splitter.md` → produce a single ticket
+4. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan
+   → **[Checkpoint 2+3: combined findings and planning approval]**
+5. Load `@ai-orchestrator/prompts/task-executor.md` → execute
+6. Load `@ai-orchestrator/prompts/reviewer.md` → review
+   → **[Quality Gate]** run project quality checks (see standard pipeline)
+   → **[Checkpoint 4: after execution, review, and quality gate]**
+   → After approval: ask user whether to keep or delete workspace
+
+Use the lightweight path when:
+* the work is clearly a single-ticket scope
+* no domain ambiguity exists (no skill discovery needed)
+* the change touches 1-5 files
 
 ---
 
 ## Multi-Agent Model
 
-See `@ai-orchestrator/system/CLAUDE_CODE_INTEGRATION.md` for the full delegation contract.
-
-Recommended setup:
-
-* `Claude Code` acts as the primary orchestrator.
-* `Codex` acts as a delegated execution or analysis agent.
-
-Typical responsibility split:
-
-* `Claude Code` — interpret user intent, choose mode, run orchestration steps, decide where to delegate, collect outputs and present the final result
-* `Codex` — perform focused code review, inspect specific files or flows, execute one ticket, validate implementation risks
+See `@ai-orchestrator/system/DELEGATION.md` for the full delegation contract.
 
 Delegation rules:
 
@@ -209,36 +211,6 @@ Skip steps only when the reason is explicit in the output.
 * **Skip `Skill Discovery`** only for trivial, single-surface changes with no domain ambiguity. Proceed directly to `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` with any available findings.
 * **Skip `Epic Generator`** when the work fits one independently shippable task group. Pass the prioritized findings directly to `@ai-orchestrator/skills/ticket-splitter.md` — treat the top finding group as an implicit single epic.
 * **Skip `Ticket Splitter`** when exactly one atomic ticket remains after epic generation. Pass the epic directly to `@ai-orchestrator/prompts/plan-reviewer.md` — treat the epic goal as the single ticket goal.
-
----
-
-## Skill Discovery
-
-Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` to run this step.
-
-It will:
-
-* identify the relevant domain
-* consult `@ai-orchestrator/skills-mapping.md` for auto-selection rules
-* run `npx skills find <query>` for external skills (query strings defined in `@ai-orchestrator/skills-mapping.md`)
-* select the minimum useful skill set
-* explain why each selected skill is needed
-
-Skill Discovery is mandatory for non-trivial work.
-
----
-
-## Skill Triggers
-
-Trigger skills automatically when relevant. See `@ai-orchestrator/skills-mapping.md` for full domain → skill rules.
-
-| Condition           | Skill Category               |
-| ------------------- | ---------------------------- |
-| React Native screen | frontend-performance         |
-| Large component     | component-splitting          |
-| API routes          | backend-validation           |
-| DB schema           | database-performance         |
-| Re-fetch patterns   | caching or state-optimization |
 
 ---
 
@@ -286,21 +258,6 @@ Every phase must emit structured artifacts using stable identifiers.
 
 ---
 
-## Findings Aggregation
-
-Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` to run this step.
-
-After running one or more skills:
-
-* merge duplicate findings
-* remove weak or unsupported points
-* normalize into the `Finding` schema
-* assign stable identifiers before prioritization
-
-No downstream phase should consume raw skill prose directly.
-
----
-
 ## Parallel Execution
 
 Parallel work is allowed only when:
@@ -342,15 +299,6 @@ Every implemented ticket must be reviewed for:
 * performance impact
 * migration or rollout impact when relevant
 * verification evidence
-
----
-
-## Task Execution
-
-Load `@ai-orchestrator/prompts/task-executor.md` to execute an approved ticket.
-Track progress in `.ai-orchestrator/<slug>/tasks.md` in your project (see `@ai-orchestrator/system/WORKSPACE.md`).
-
-Before execution begins, write the full approved ticket artifact (all fields: `id`, `epic_id`, `title`, `goal`, `files[]`, `changes[]`, `acceptance_criteria[]`, `risks[]`, `dependencies[]`, `parallelizable`) into `.ai-orchestrator/<slug>/tickets.md`. Add the ticket id and title to the TODO section of `.ai-orchestrator/<slug>/tasks.md`. The executor reads the full artifact from `tickets.md` and tracks state in `tasks.md`.
 
 ---
 

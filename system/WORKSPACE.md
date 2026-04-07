@@ -27,7 +27,7 @@ Lives in the **project being worked on** — not in the `ai-orchestrator/` syste
         ├── findings.md   ← findings and epics — written during planning
         ├── tickets.md    ← approved ticket artifacts — written after Checkpoint 3
         ├── tasks.md      ← TODO / IN PROGRESS / DONE board
-        └── results.md    ← execution summaries and review output — appended per ticket
+        └── results.md    ← execution summaries and review output (created on first ticket completion)
 ```
 
 ---
@@ -61,7 +61,7 @@ At the start of every pipeline:
 3. **If exists** and `context.md` Status is `planning` or `executing` → resume — read `context.md` and continue from current status. Do not overwrite any existing files.
    - If Status is `reviewing` → resume at Checkpoint 4 review step
    - If Status is `done` → the workspace should have been deleted; treat as not exists and create fresh
-4. **If not exists** → create `.ai-orchestrator/<slug>/`, write `context.md` with Status `planning`, create empty `findings.md`, `tickets.md`, `tasks.md`
+4. **If not exists** → create `.ai-orchestrator/<slug>/`, write `context.md` with Status `planning`, create empty `findings.md`, `tickets.md`, `tasks.md`. Note: `results.md` is not created at init — it is created by `@ai-orchestrator/prompts/task-executor.md` when the first ticket completes.
 
 ### Recovery
 
@@ -83,14 +83,16 @@ Update `context.md` Status field at each transition:
 | `planning` | From creation through Checkpoint 3 |
 | `executing` | After Checkpoint 3, during ticket execution |
 | `reviewing` | During Checkpoint 4 review |
-| `done` | After Checkpoint 4 approval — triggers deletion |
+| `done` | After Checkpoint 4 approval |
 
-### Deletion
+### Completion
 
 After Checkpoint 4 is approved:
 1. Update `context.md` Status to `done`
-2. Delete `.ai-orchestrator/<slug>/` and all its contents
-3. If `.ai-orchestrator/` directory is now empty, leave it in place (the `.gitignore` entry remains useful)
+2. Ask the user: "Would you like to keep the workspace `.ai-orchestrator/<slug>/` for reference, or delete it?"
+   - **Keep**: leave all files in place. The workspace serves as documentation of what was done (findings, tickets, results).
+   - **Delete**: remove `.ai-orchestrator/<slug>/` and all its contents. If `.ai-orchestrator/` directory is now empty, leave it in place (the `.gitignore` entry remains useful).
+3. Do not delete automatically — the user decides.
 
 ---
 
@@ -197,7 +199,7 @@ Appended by `@ai-orchestrator/prompts/task-executor.md` (execution summary) and 
 
 ## Multi-Agent Cooperation
 
-When delegating to Codex via `@ai-orchestrator/system/CLAUDE_CODE_INTEGRATION.md`, always pass `workspace_path` so Codex can read context and write results without needing the full conversation history.
+When delegating to Codex via `@ai-orchestrator/system/DELEGATION.md`, always pass `workspace_path` so Codex can read context and write results without needing the full conversation history.
 
 ```
 Claude Code (session 1)

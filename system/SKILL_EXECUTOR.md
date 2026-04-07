@@ -60,3 +60,20 @@ For each finding, provide:
 * Focus on analysis only.
 * Prefer evidence over generic best practices.
 * Output must be easy to merge into the canonical `Finding` schema.
+
+---
+
+## Error Handling
+
+If skill execution produces no findings or malformed output:
+
+1. Log: "Skill `<skill_name>` produced no usable output"
+2. Record as an info-severity finding: `{ title: "<skill_name> — no output", severity: "info", evidence: "no output produced", recommended_action: "manual review of <domain>" }`
+3. Continue pipeline — do not block on a single skill failure
+4. Surface the failure in Checkpoint 2 summary so the human can decide whether to re-run or accept
+
+If all skills in the execution plan fail:
+
+1. Surface as a Checkpoint 2 blocker
+2. Recommend manual analysis or scope reduction
+3. Do not proceed past Checkpoint 2 without human approval

@@ -29,7 +29,7 @@ npx query: `npx skills find react-native`
 
 Trigger when:
 
-* `.tsx` files are in scope
+* `.tsx` / `.jsx` files are in scope
 * screens or components are mentioned
 * UI behavior or rendering issues are reported
 
@@ -40,7 +40,24 @@ Possible skills:
 * `re-renders`
 * `component-architecture`
 
-### Backend (Express / API)
+### Frontend (Web — React / Vue / Svelte / Angular)
+
+npx query: `npx skills find frontend`
+
+Trigger when:
+
+* `.tsx` / `.jsx` / `.vue` / `.svelte` files are in scope
+* browser-specific APIs, DOM manipulation, or SSR are involved
+* bundle size, hydration, or client-side routing issues appear
+
+Possible skills:
+
+* `frontend`
+* `web-performance`
+* `accessibility`
+* `component-architecture`
+
+### Backend (Node / Express)
 
 npx query: `npx skills find backend-validation`
 
@@ -56,6 +73,72 @@ Possible skills:
 * `security`
 * `error-handling`
 
+### Backend (Python — Django / FastAPI / Flask)
+
+npx query: `npx skills find python-backend`
+
+Trigger when:
+
+* `.py` files with route handlers, views, or serializers are in scope
+* ORM usage, middleware, or async patterns are involved
+
+Possible skills:
+
+* `python-backend`
+* `api-design`
+* `security`
+* `error-handling`
+
+### Backend (Go)
+
+npx query: `npx skills find go-backend`
+
+Trigger when:
+
+* `.go` files with HTTP handlers, middleware, or gRPC services are in scope
+* concurrency patterns, goroutine management, or channel usage are involved
+
+Possible skills:
+
+* `go-backend`
+* `api-design`
+* `concurrency`
+* `error-handling`
+
+### iOS / Swift
+
+npx query: `npx skills find swift`
+
+Trigger when:
+
+* `.swift` files are in scope
+* SwiftUI, UIKit, or Combine patterns are involved
+* app lifecycle, navigation, or platform-specific APIs are mentioned
+
+Possible skills:
+
+* `swift`
+* `ios-performance`
+* `swiftui`
+* `app-architecture`
+
+### Android / Kotlin
+
+npx query: `npx skills find kotlin-android`
+
+Trigger when:
+
+* `.kt` files are in scope
+* Jetpack Compose, Android lifecycle, or coroutines are involved
+* Gradle build, dependency injection, or platform APIs are mentioned
+
+Possible skills:
+
+* `kotlin-android`
+* `android-performance`
+* `compose`
+* `app-architecture`
+
 ### Database
 
 npx query: `npx skills find database-performance`
@@ -63,6 +146,7 @@ npx query: `npx skills find database-performance`
 Trigger when:
 
 * schema, queries, migrations, or indexes are involved
+* ORM configurations, connection pooling, or query optimization are in scope
 
 Possible skills:
 
@@ -77,9 +161,9 @@ npx query: `npx skills find performance`
 
 Trigger when:
 
-* re-renders are mentioned
-* UI is slow
-* repeated fetching or cache misses are present
+* measurable slowness is reported (latency, re-renders, load time)
+* repeated fetching, cache misses, or memory issues are present
+* profiling data or benchmarks are available
 
 Possible skills:
 
@@ -88,15 +172,49 @@ Possible skills:
 * `memoization`
 * `state-optimization`
 
+### Infrastructure / DevOps
+
+npx query: `npx skills find infrastructure`
+
+Trigger when:
+
+* Terraform, Docker, Kubernetes, or CI/CD configs are in scope
+* deployment pipelines, environment configs, or infrastructure-as-code are involved
+* scaling, monitoring, or reliability concerns appear
+
+Possible skills:
+
+* `infrastructure`
+* `docker`
+* `ci-cd`
+* `monitoring`
+
+### Testing
+
+npx query: `npx skills find testing`
+
+Trigger when:
+
+* test files or test coverage gaps are in scope
+* flaky tests, missing assertions, or test architecture issues are reported
+* migration from one test framework to another is involved
+
+Possible skills:
+
+* `testing`
+* `test-architecture`
+* `integration-testing`
+* `test-coverage`
+
 ### Architecture
 
 npx query: `npx skills find architecture`
 
 Trigger when:
 
-* files are large
-* boundaries are unclear
-* ownership or scaling concerns appear
+* files are large or boundaries are unclear
+* ownership, scaling, or dependency concerns appear
+* monolith decomposition or module extraction is discussed
 
 Possible skills:
 

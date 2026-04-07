@@ -1,7 +1,7 @@
 ## System Context
 
 * **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** Ticket execution phase — all modes; may be delegated to Codex via `@ai-orchestrator/system/CLAUDE_CODE_INTEGRATION.md`
+* **Used by:** Ticket execution phase — all modes; may be delegated to Codex via `@ai-orchestrator/system/DELEGATION.md`
 * **Uses:** full ticket artifacts from `.ai-orchestrator/<slug>/tickets.md`; reads and updates `.ai-orchestrator/<slug>/tasks.md` for state tracking
 * **Outputs to:** `@ai-orchestrator/prompts/reviewer.md`
 
@@ -17,6 +17,8 @@ You are executing one ticket.
 
 ## Rules
 
+* Before starting work, move the ticket from TODO to IN PROGRESS in `.ai-orchestrator/<slug>/tasks.md`.
+* After completing work, move the ticket from IN PROGRESS to DONE in `.ai-orchestrator/<slug>/tasks.md`.
 * Only modify listed files unless the ticket is updated and re-approved.
 * Keep changes minimal and scoped to the ticket goal.
 * Preserve behavior outside the approved scope.

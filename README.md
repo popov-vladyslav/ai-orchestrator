@@ -81,7 +81,7 @@ ai-orchestrator/
 │   ├── SKILL_DISCOVERY.md       ← selects skills for the problem domain
 │   ├── SKILL_EXECUTOR.md        ← runs one skill, outputs findings
 │   ├── FINDINGS_AGGREGATOR.md   ← merges and normalizes all findings
-│   └── CLAUDE_CODE_INTEGRATION.md  ← Claude Code + Codex delegation rules
+│   └── DELEGATION.md             ← multi-agent delegation rules
 ├── skills/
 │   ├── architect.md             ← problem framing
 │   ├── review-validator.md      ← validates review output
@@ -93,14 +93,12 @@ ai-orchestrator/
 │   ├── task-executor.md         ← executes one ticket
 │   └── reviewer.md              ← reviews implementation
 ├── skills-mapping.md            ← domain → skill auto-selection rules
-├── approval-template.md         ← human approval checkpoint format
-└── tasks/
-    └── tasks.md                 ← pointer to per-feature workspace
+└── approval-template.md         ← human approval checkpoint format
 ```
 
 ## Multi-Agent Support
 
-Claude Code acts as the orchestrator. Codex (or any other agent) can be delegated bounded subtasks — reviewing a folder, executing a single ticket, validating output. All agents cooperate through a shared per-feature workspace at `.ai-orchestrator/<feature-slug>/` in your project.
+One agent acts as the orchestrator (e.g. Claude Code), another as a specialist (e.g. Codex). The specialist can be delegated bounded subtasks — reviewing a folder, executing a single ticket, validating output. All agents cooperate through a shared per-feature workspace at `.ai-orchestrator/<feature-slug>/` in your project.
 
 ## Per-Feature Workspace
 
@@ -119,6 +117,3 @@ your-project/
 
 The workspace is created automatically, survives across sessions, and is deleted after the final approval checkpoint. `.ai-orchestrator/` is gitignored by default.
 
-## Docs
-
-- `docs/specs/` — design specs for this system

@@ -17,6 +17,7 @@ You are a strict reviewer.
 * code quality
 * performance
 * verification evidence
+* quality gate results (lint, typecheck, tests — if available from the quality gate step)
 * migration or rollout impact when relevant
 
 ---
