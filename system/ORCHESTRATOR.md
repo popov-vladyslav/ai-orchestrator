@@ -10,6 +10,21 @@ Point any AI at this file using its absolute path on your machine (e.g. `/Users/
 
 ---
 
+## Resuming a Pipeline
+
+Before starting a new pipeline, check if `.ai-orchestrator/` exists in the project root. If a workspace with an active status exists, resume instead of restarting:
+
+| `context.md` Status | Resume action |
+| -------------------- | ------------- |
+| `planning` | Check `findings.md` and `tickets.md` to determine the last completed phase. Resume from the next incomplete phase. |
+| `executing` | Read `tasks.md` — resume Phase 4 from the first TODO ticket. |
+| `reviewing` | Resume at Checkpoint 4 — review the completed work. |
+| `done` | Workspace is finished. Start a new pipeline if needed. |
+
+If multiple workspaces exist, list them and ask the user which to resume. See `@ai-orchestrator/system/WORKSPACE.md` for the full resume contract.
+
+---
+
 ## Purpose
 
 Universal AI execution workflow with:
@@ -60,7 +75,7 @@ Select mode from the input:
 | bug report        | `BUGFIX_MODE`    |
 | performance issue | `PERFORMANCE_MODE` |
 
-If unclear, default to the smallest safe mode and state the assumption.
+If unclear, default to `REVIEW_MODE` (analysis only — no code changes until approved) and state the assumption.
 
 Mode does not need to be specified explicitly if the request and context are clear.
 
@@ -72,6 +87,16 @@ Use explicit mode only when:
 * you want to override a likely but incorrect auto-detection
 
 If the user only references this orchestrator and asks for an outcome, infer the mode and continue.
+
+### Classification Examples
+
+| Input | Mode | Reasoning |
+| ----- | ---- | --------- |
+| "Review the auth module for security issues" | `REVIEW_MODE` | Explicit review request — analysis, no code changes |
+| "Add dark mode support" | `FEATURE_MODE` | New capability that doesn't exist yet |
+| "Login button doesn't respond on Android" | `BUGFIX_MODE` | Specific broken behavior to fix |
+| "Dashboard takes 5 seconds to load" | `PERFORMANCE_MODE` | Measurable slowness with implicit metric |
+| "Check the payment flow and fix any issues" | `REVIEW_MODE` | Ambiguous — could be review or bugfix. Default to review; escalate at Checkpoint 1 if code changes are needed |
 
 ---
 
@@ -114,12 +139,14 @@ Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrat
 ### Phase 2: Analysis (all modes)
 
 1. Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai-orchestrator/skills-mapping.md`)
-2. Load `@ai-orchestrator/system/SKILL_EXECUTOR.md` → run each selected skill
+2. Execute skills per the plan from SKILL_DISCOVERY: run `run_first` skills sequentially, then run `run_in_parallel[]` skills concurrently when the AI supports concurrent tool execution. One `@ai-orchestrator/system/SKILL_EXECUTOR.md` invocation per skill. Collect all outputs before proceeding to step 3.
 3. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
 
 **PERFORMANCE_MODE only:** after aggregation, load `@ai-orchestrator/skills/architect.md` → propose architectural approach (used as directional context for prioritization, not as a finding).
 
 **BUGFIX_MODE note:** if `architect` was used in Phase 1 and no skills were run, convert the architect's `Scope` and `Risks` output into a minimal Finding artifact (`severity: medium`, `evidence: architect analysis`) before passing to aggregation.
+
+**Output validation:** before presenting Checkpoint 2, verify each finding has `id`, `title`, `severity`, `evidence`, and `recommended_action`. Drop findings missing required fields and note them in the checkpoint summary.
 
 → **[Checkpoint 2: after normalized findings]** human approval
 
@@ -128,6 +155,9 @@ Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrat
 1. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
 2. Load `@ai-orchestrator/skills/epic-generator.md` → group into epics (skip if work fits one independently shippable group)
 3. Load `@ai-orchestrator/skills/ticket-splitter.md` → split into tickets
+
+**Output validation:** before passing to plan-reviewer, verify each ticket has `id`, `goal`, `files[]`, `changes[]`, and `acceptance_criteria[]`. Return incomplete tickets to ticket-splitter for a single fix pass.
+
 4. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan structure
    - If plan-reviewer outputs REVISE: return concerns to ticket-splitter, re-split affected tickets, re-run plan-reviewer (max 1 revision cycle). If still blocked: present at Checkpoint 3 with blocker flag.
 
@@ -139,10 +169,11 @@ After approval: write full ticket artifacts to `.ai-orchestrator/<slug>/tickets.
 
 For each approved ticket:
 
+0. **Before starting work:** move the ticket from TODO → IN PROGRESS in `.ai-orchestrator/<slug>/tasks.md`. This must happen per ticket, not in bulk.
 1. Load `@ai-orchestrator/prompts/task-executor.md` → execute the ticket
 2. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
    - If reviewer outputs REVISE: log revision reason to `results.md`, re-execute with reviewer feedback as additional input, re-review (max 2 revision cycles). If still blocked after 2 cycles: escalate to Checkpoint 4 with blocker flag.
-   - If reviewer outputs APPROVE: continue to next ticket.
+   - If reviewer outputs APPROVE: move the ticket from IN PROGRESS → DONE in `tasks.md`, then continue to next ticket.
 
 → **[Quality Gate: after all tickets executed and reviewed]**
 
@@ -176,8 +207,8 @@ For single-surface changes with clear scope and no domain ambiguity, use this sh
 3. Load `@ai-orchestrator/skills/ticket-splitter.md` → produce a single ticket
 4. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan
    → **[Checkpoint 2+3: combined findings and planning approval]**
-5. Load `@ai-orchestrator/prompts/task-executor.md` → execute
-6. Load `@ai-orchestrator/prompts/reviewer.md` → review
+5. Move ticket TODO → IN PROGRESS in `tasks.md`. Load `@ai-orchestrator/prompts/task-executor.md` → execute
+6. Load `@ai-orchestrator/prompts/reviewer.md` → review. On APPROVE: move ticket IN PROGRESS → DONE in `tasks.md`.
    → **[Quality Gate]** run project quality checks (see standard pipeline)
    → **[Checkpoint 4: after execution, review, and quality gate]**
    → After approval: ask user whether to keep or delete workspace
@@ -272,6 +303,18 @@ Do not force parallelization. Serial work is valid when dependencies require it.
 
 ---
 
+## Pipeline Limits
+
+Recommended limits per pipeline run (advisory — the human can approve a larger scope at any checkpoint):
+
+* **Max 15 normalized findings** at Checkpoint 2. If exceeded, prioritize the top items by severity, present them, and note deferred items with count.
+* **Max 5 epics** and **max 15 tickets** at Checkpoint 3. Same: present the top items, defer the rest.
+* **Max 20 ticket executions** in a single session. If reached, pause and present a progress summary. The human decides whether to continue or stop.
+
+These limits prevent unbounded pipelines from exhausting context windows and producing diminishing-quality output.
+
+---
+
 ## Human Approval
 
 Load `@ai-orchestrator/approval-template.md` at each checkpoint.
@@ -326,6 +369,8 @@ Before solving:
 ---
 
 ## Principles
+
+These principles are also embedded in individual skill and prompt rules where they apply:
 
 * small steps over big rewrites
 * clarity over cleverness

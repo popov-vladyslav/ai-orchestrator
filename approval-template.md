@@ -62,6 +62,17 @@ Ensure human control over AI execution at the defined checkpoints.
 
 ---
 
+## Checkpoint-Specific Focus
+
+Adapt your review focus based on which checkpoint you are presenting:
+
+* **Checkpoint 1 (Framing):** Is the problem correctly understood? Is the scope right-sized? Are constraints realistic?
+* **Checkpoint 2 (Findings):** Are findings evidence-based? Are priorities defensible? Is anything missing?
+* **Checkpoint 3 (Planning):** Are tickets atomic and scoped? Are dependencies correct? Is parallelization safe?
+* **Checkpoint 4 (Execution):** Does the implementation match the tickets? Do quality checks pass? Are there regressions?
+
+---
+
 ## Decision
 
 * APPROVE

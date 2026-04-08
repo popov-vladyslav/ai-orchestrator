@@ -69,7 +69,7 @@ The AI reads the system map, selects the right mode, and self-orchestrates throu
 5. **Reviews the plan** — tech lead review before execution begins
 6. **Human approval** — 4 checkpoints gate every stage
 7. **Executes** — ticket by ticket, with code review after each
-8. **Cleans up** — per-feature workspace deleted on completion
+8. **Cleans up** — asks whether to keep or delete the per-feature workspace
 
 ## File Structure
 
@@ -115,5 +115,5 @@ your-project/
         └── results.md    ← execution summaries and review output
 ```
 
-The workspace is created automatically, survives across sessions, and is deleted after the final approval checkpoint. `.ai-orchestrator/` is gitignored by default.
+The workspace is created automatically, survives across sessions, and the user is asked whether to keep or delete it after the final approval checkpoint. `.ai-orchestrator/` is gitignored by default.
 

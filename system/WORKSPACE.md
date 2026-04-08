@@ -11,7 +11,7 @@
 
 ## Purpose
 
-Manages per-feature temporary workspaces that enable multi-session and multi-agent cooperation. Every pipeline creates or resumes a workspace and deletes it after the final approval checkpoint.
+Manages per-feature temporary workspaces that enable multi-session and multi-agent cooperation. Every pipeline creates or resumes a workspace and asks the user whether to keep or delete it after the final approval checkpoint.
 
 ---
 
@@ -60,7 +60,7 @@ At the start of every pipeline:
 2. Check if `.ai-orchestrator/<slug>/` exists in the project root
 3. **If exists** and `context.md` Status is `planning` or `executing` → resume — read `context.md` and continue from current status. Do not overwrite any existing files.
    - If Status is `reviewing` → resume at Checkpoint 4 review step
-   - If Status is `done` → the workspace should have been deleted; treat as not exists and create fresh
+   - If Status is `done` → workspace is complete. Ask the user if they want to start a new pipeline in a fresh workspace or reuse context from this one.
 4. **If not exists** → create `.ai-orchestrator/<slug>/`, write `context.md` with Status `planning`, create empty `findings.md`, `tickets.md`, `tasks.md`. Note: `results.md` is not created at init — it is created by `@ai-orchestrator/prompts/task-executor.md` when the first ticket completes.
 
 ### Recovery
@@ -112,7 +112,7 @@ Written once at creation by the orchestrator. Updated at each status transition.
 - **Constraints:** known constraints or assumptions
 - **Created:** YYYY-MM-DD
 - **Status:** planning | executing | reviewing | done
-- **Active agent:** Claude Code | Codex | (none)
+- **Active agent:** orchestrator | specialist | (none)
 ```
 
 Only the orchestrator (`@ai-orchestrator/system/ORCHESTRATOR.md`) updates `context.md`. Other agents (task-executor, reviewer) read it but do not write to it.
@@ -199,24 +199,25 @@ Appended by `@ai-orchestrator/prompts/task-executor.md` (execution summary) and 
 
 ## Multi-Agent Cooperation
 
-When delegating to Codex via `@ai-orchestrator/system/DELEGATION.md`, always pass `workspace_path` so Codex can read context and write results without needing the full conversation history.
+When delegating to a specialist agent via `@ai-orchestrator/system/DELEGATION.md`, always pass `workspace_path` so the specialist can read context and write results without needing the full conversation history.
 
 ```
-Claude Code (session 1)
+Orchestrator agent (session 1)
   → creates .ai-orchestrator/auth-feature/
   → runs planning pipeline
   → writes findings.md, tickets.md, tasks.md
-  → delegates T-001 to Codex
+  → delegates T-001 to specialist agent
 
-Codex (session 2)
+Specialist agent (session 2)
   → reads .ai-orchestrator/auth-feature/context.md    (orient)
   → reads .ai-orchestrator/auth-feature/tickets.md    (full spec)
   → reads .ai-orchestrator/auth-feature/tasks.md      (check state)
+  → moves T-001 from TODO → IN PROGRESS in tasks.md
   → executes T-001
-  → moves T-001 from TODO → DONE in tasks.md
+  → moves T-001 from IN PROGRESS → DONE in tasks.md
   → appends execution summary to results.md
 
-Claude Code (session 3)
+Orchestrator agent (session 3)
   → reads .ai-orchestrator/auth-feature/tasks.md      (resume)
   → reviews T-001 output
   → continues with T-002

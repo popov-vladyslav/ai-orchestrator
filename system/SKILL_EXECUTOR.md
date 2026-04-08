@@ -63,6 +63,18 @@ For each finding, provide:
 
 ---
 
+## Inline Analysis (when skill_name starts with `inline:`)
+
+When executing an inline skill (no external skill available):
+
+1. Identify the target files from `problem_context`
+2. Read each file and analyze against the domain's dimensions (use the "Possible skills" list from `@ai-orchestrator/skills-mapping.md` as analysis dimensions)
+3. For each dimension, look for: violations, inefficiencies, missing patterns, and risks
+4. Output findings in the same schema as external skill output
+5. Mark all inline findings with `source: inline` so downstream steps can distinguish confidence level
+
+---
+
 ## Error Handling
 
 If skill execution produces no findings or malformed output:
