@@ -1,79 +1,99 @@
 ## System Context
 
 * **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** FEATURE_MODE (step 1), BUGFIX_MODE (step 1), PERFORMANCE_MODE (step 5 — after findings aggregation and Checkpoint 2)
+* **Used by:** FEATURE_MODE (Phase 1), BUGFIX_MODE (Phase 1)
 * **Uses:** nothing
-* **Outputs to:** `@ai-orchestrator/system/SKILL_DISCOVERY.md` (FEATURE_MODE, BUGFIX_MODE) | `@ai-orchestrator/skills/prioritizer.md` (PERFORMANCE_MODE — architect output serves as architectural context, not as findings; the prioritizer uses the proposed approach to align ticket priorities with architectural direction)
+* **Outputs to:** `@ai-orchestrator/system/SKILL_DISCOVERY.md`
 
 ---
 
-You are a senior software architect.
+## Overview
 
-## Input
+Frame the problem before any analysis runs. Defines scope, constraints, approach, and success criteria so that skill discovery and execution operate on a shared understanding — not assumptions.
 
-* feature request, code review, bug report, or performance problem
+## When to Use
 
----
+- Input is a feature request, bug report, or open-ended problem statement
+- Scope is unclear or could be interpreted multiple ways
+- Constraints or assumptions need to be made explicit before skills run
 
-## Task
+**When NOT to use:**
+- Input already defines scope, constraints, and success criteria explicitly — pass directly to `@ai-orchestrator/system/SKILL_DISCOVERY.md`
+- PERFORMANCE_MODE — use `@ai-orchestrator/skills/performance-optimization.md` instead
+
+## Process
 
 1. Understand the goal.
-2. Define the scope.
+2. Define scope (in and out).
 3. State constraints and assumptions.
 4. Propose a high-level approach.
+5. Identify risks.
+6. Define success criteria.
 
----
+### Output fields
 
-## Output
-
-### Problem Understanding
-
+**Problem Understanding**
 * `summary`
 * `goal`
 
-### Scope
-
+**Scope**
 * `in_scope[]`
 * `out_of_scope[]`
 
-### Constraints
-
+**Constraints**
 * `constraints[]`
 * `assumptions[]`
 
-### Approach
-
+**Approach**
 * `approach`
 * `alternatives_considered[]`
 
-### Risks
-
+**Risks**
 * `risks[]`
 
-### Success Criteria
-
+**Success Criteria**
 * `success_criteria[]`
 
----
-
-## Rules
+### Rules
 
 * No implementation details.
 * No ticket-level task breakdown.
 * Prefer clarity over cleverness in approach design.
-* Focus on clarity and decision quality.
 
----
-
-## Example
+### Example
 
 **Input:** "Add OAuth login with Google and GitHub providers"
 
 **Output (abbreviated):**
-
 * **Problem Understanding:** Users need social login. Goal: add OAuth via Google and GitHub.
 * **Scope:** In: OAuth provider config, callback handler, session integration. Out: UI changes, other providers.
 * **Constraints:** Must use existing session store. Cannot add new dependencies without approval.
 * **Approach:** Add a provider-agnostic OAuth service with adapter pattern. Google and GitHub as first two adapters.
 * **Risks:** Token refresh timing, callback URL mismatch across environments.
 * **Success Criteria:** User can log in via Google or GitHub; session persists; existing login unaffected.
+
+## Common Rationalizations
+
+| Rationalization | Reality |
+|---|---|
+| "The requirements are already clear enough to skip this" | Even clear requirements need documented scope, constraints, and risks before discovery runs. Undocumented assumptions become scope creep during execution. |
+| "I'll define scope during execution" | Scope decisions made during execution cause unplanned file changes and regressions. Define it now so the human can approve before any skills run. |
+| "This is a small change, architecture framing is overkill" | Small changes have hidden dependencies. The framing step prevents surprise regressions and keeps the human aligned on scope before work starts. |
+
+## Red Flags
+
+- Scope that includes implementation details (file names, function signatures)
+- Success criteria that are not measurable ("works correctly", "feels faster")
+- Risks that are generic ("may have bugs", "could break something")
+- Approach that commits to specific implementation before skills have run
+
+## Verification
+
+After completing this skill:
+
+- [ ] Problem summary is specific — not "improve the feature" or "fix the issue"
+- [ ] `in_scope[]` and `out_of_scope[]` are both explicitly listed
+- [ ] At least one constraint and one assumption are documented
+- [ ] Approach is high-level — no implementation file names or function signatures
+- [ ] Each risk is specific and actionable — not "may have edge cases"
+- [ ] Success criteria are measurable
