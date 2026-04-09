@@ -25,7 +25,7 @@ Group related findings into independently valuable epics so that planning produc
 
 ### Output fields
 
-For each epic:
+Output one `Epic` per group (canonical schema: `@ai-orchestrator/system/ORCHESTRATOR.md`):
 * `id`
 * `title`
 * `goal`

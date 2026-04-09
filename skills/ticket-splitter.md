@@ -25,7 +25,7 @@ Split one epic into atomic implementation tickets so that each unit of work has 
 
 ### Output fields
 
-For each ticket:
+Output one `Ticket` per atomic unit (canonical schema: `@ai-orchestrator/system/ORCHESTRATOR.md`):
 * `id`
 * `epic_id`
 * `title`
