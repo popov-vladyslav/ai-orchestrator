@@ -48,6 +48,7 @@ Every runtime file in this system and when to load it:
 | ---- | ---- | --------- |
 | `@ai-orchestrator/skills/architect.md` | Frames problem, defines scope, proposes approach | FEATURE_MODE or BUGFIX_MODE — first step |
 | `@ai-orchestrator/skills/review-validator.md` | Validates review consistency, removes weak findings | REVIEW_MODE — first step; BUGFIX_MODE — alternative to Architect |
+| `@ai-orchestrator/skills/performance-optimization.md` | Frames performance problem, establishes baseline, identifies likely bottleneck | PERFORMANCE_MODE — Phase 1 |
 | `@ai-orchestrator/system/SKILL_DISCOVERY.md` | Selects relevant skills for the problem domain | All modes — after problem framing, or as first step in PERFORMANCE_MODE |
 | `@ai-orchestrator/skills-mapping.md` | Maps problem domains to skill names | Used by SKILL_DISCOVERY |
 | `@ai-orchestrator/system/SKILL_EXECUTOR.md` | Executes one skill and converts output to findings | Called per skill by SKILL_DISCOVERY |
@@ -132,9 +133,9 @@ Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrat
 | `REVIEW_MODE` | `@ai-orchestrator/skills/review-validator.md` | Validate and normalize the review |
 | `FEATURE_MODE` | `@ai-orchestrator/skills/architect.md` | Frame problem, define scope |
 | `BUGFIX_MODE` | `@ai-orchestrator/skills/architect.md` OR `@ai-orchestrator/skills/review-validator.md` | Choose based on input type |
-| `PERFORMANCE_MODE` | *(skip — no framing)* | Jump directly to Phase 2 |
+| `PERFORMANCE_MODE` | `@ai-orchestrator/skills/performance-optimization.md` | Frame the problem, establish baseline, identify likely bottleneck |
 
-→ **[Checkpoint 1: after framing]** human approval (skip for PERFORMANCE_MODE)
+→ **[Checkpoint 1: after framing]** human approval
 
 ### Phase 2: Analysis (all modes)
 
@@ -142,7 +143,7 @@ Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrat
 2. Execute skills per the plan from SKILL_DISCOVERY: run `run_first` skills sequentially, then run `run_in_parallel[]` skills concurrently when the AI supports concurrent tool execution. One `@ai-orchestrator/system/SKILL_EXECUTOR.md` invocation per skill. Collect all outputs before proceeding to step 3.
 3. Load `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` → merge and normalize all findings
 
-**PERFORMANCE_MODE only:** after aggregation, load `@ai-orchestrator/skills/architect.md` → propose architectural approach (used as directional context for prioritization, not as a finding).
+**PERFORMANCE_MODE only:** the architectural context comes from `@ai-orchestrator/skills/performance-optimization.md` output (Phase 1 framing). Pass it to the prioritizer as directional context — not as a finding.
 
 **BUGFIX_MODE note:** if `architect` was used in Phase 1 and no skills were run, convert the architect's `Scope` and `Risks` output into a minimal Finding artifact (`severity: medium`, `evidence: architect analysis`) before passing to aggregation.
 
