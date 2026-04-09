@@ -1,12 +1,26 @@
 # AI ORCHESTRATOR
 
+## MANDATORY — Read and follow this file exactly. Do NOT summarise, skip, or improvise any step.
+
 ## How to Use
 
-Point any AI at this file using its absolute path on your machine (e.g. `/Users/you/ai-orchestrator/system/ORCHESTRATOR.md`). It is the single entry point for the entire system. Read it fully before taking any action. All other files in the system are referenced explicitly — the AI will know exactly which file to load at each step.
+Point any AI at this file using its absolute path on your machine (e.g. `/Users/you/ai-orchestrator/system/ORCHESTRATOR.md`). It is the single entry point for the entire system. You MUST read this entire file before taking any action. All other files in the system are referenced explicitly — you will load each file at the step that requires it.
 
 **Path convention:** `@ai-orchestrator/` is a self-referential prefix used internally between files — it resolves relative to wherever you installed this tool. You never type it yourself; just use the absolute path to this file when starting a session.
 
 **Setup:** Clone this repo once to a stable location on your machine (e.g. `~/ai-orchestrator/`). Point your AI at the absolute path to this file at the start of any session. The tool works across all your projects without being copied into each one.
+
+### Execution Rules
+
+When this file or any file in this system tells you to load a file (e.g. "Load `@ai-orchestrator/skills/architect.md`"), you MUST use the Read tool to read that file in full before continuing. Do NOT proceed based on memory, summaries, or assumptions about the file's content.
+
+You are NOT allowed to:
+- **Skip phases or checkpoints** — every phase and checkpoint defined in the pipeline below must be executed in order
+- **Combine phases** that this file defines as separate
+- **Improvise your own workflow** instead of following the pipeline as written
+- **Summarise what a referenced file says** instead of actually reading and executing it
+- **Proceed past a checkpoint** without presenting it to the user and receiving approval
+- **Claim you followed this orchestrator** if you did not read and execute each step
 
 ---
 
@@ -170,11 +184,10 @@ After approval: write full ticket artifacts to `.ai-orchestrator/<slug>/tickets.
 
 For each approved ticket:
 
-0. **Before starting work:** move the ticket from TODO → IN PROGRESS in `.ai-orchestrator/<slug>/tasks.md`. This must happen per ticket, not in bulk.
-1. Load `@ai-orchestrator/prompts/task-executor.md` → execute the ticket
+1. Load `@ai-orchestrator/prompts/task-executor.md` → execute the ticket. The task-executor owns the `TODO → IN PROGRESS` transition in `.ai-orchestrator/<slug>/tasks.md` and must update tickets one at a time as work begins. Do not mark a ticket `DONE` during execution.
 2. Load `@ai-orchestrator/prompts/reviewer.md` → review implementation
    - If reviewer outputs REVISE: log revision reason to `results.md`, re-execute with reviewer feedback as additional input, re-review (max 2 revision cycles). If still blocked after 2 cycles: escalate to Checkpoint 4 with blocker flag.
-   - If reviewer outputs APPROVE: move the ticket from IN PROGRESS → DONE in `tasks.md`, then continue to next ticket.
+   - If reviewer outputs APPROVE: move the ticket from `IN PROGRESS` → `DONE` in `.ai-orchestrator/<slug>/tasks.md`, then continue to next ticket. `DONE` must only be set after a successful review.
 
 → **[Quality Gate: after all tickets executed and reviewed]**
 
