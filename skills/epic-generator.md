@@ -28,8 +28,8 @@ Group related findings into independently valuable epics so that planning produc
 Output one `Epic` per group (canonical schema: `@ai-orchestrator/system/ORCHESTRATOR.md`):
 * `id`
 * `title`
-* `goal`
-* `scope`
+* `goal` — the desired outcome (what success looks like)
+* `scope` — the boundary definition (what is explicitly in and out of this epic)
 * `impact`
 * `priority`
 * `dependencies[]`
@@ -53,6 +53,7 @@ Output one `Epic` per group (canonical schema: `@ai-orchestrator/system/ORCHESTR
 ## Red Flags
 
 - Fewer than 2 epics when 8+ findings exist
+- More than 8 epics generated — consolidate or the plan will be unmanageable
 - An epic that depends on all other epics (not independently shippable)
 - `success_criteria[]` that are not measurable ("works better", "feels right")
 - `source_finding_ids[]` that reference findings not present in the input

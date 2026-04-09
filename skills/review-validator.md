@@ -31,7 +31,7 @@ Validate an incoming review for consistency, accuracy, and signal quality before
 
 ### Output fields
 
-**Valid Findings** — for each finding:
+**Valid Findings** — normalized to the canonical `Finding` schema (`@ai-orchestrator/system/ORCHESTRATOR.md`):
 * `title`
 * `summary`
 * `category`
@@ -49,7 +49,7 @@ Validate an incoming review for consistency, accuracy, and signal quality before
 * `area`
 * `why_missing`
 
-**Final Priorities** — for each finding:
+**Final Priorities** — advisory hints only; definitive priority is set by `@ai-orchestrator/skills/prioritizer.md`:
 * `finding_title`
 * `priority_hint`
 * `why`
