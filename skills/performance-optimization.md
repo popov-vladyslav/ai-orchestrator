@@ -57,7 +57,7 @@ Output:
 
 * `approach` — high-level fix aligned with the bottleneck ("batch task owner queries using a single JOIN")
 * `alternatives_considered[]` — other approaches and why they were deprioritized
-* `risk` — what could go wrong ("JOIN may be slower than N+1 on small datasets — verify with profiling")
+* `risks[]` — what could go wrong ("JOIN may be slower than N+1 on small datasets — verify with profiling")
 * `success_criteria[]` — measurable outcomes ("p95 API latency ≤ 200ms", "LCP ≤ 2.5s on simulated 4G")
 
 ### Step 4: Identify skills needed for Phase 2
@@ -69,6 +69,9 @@ List the domain skills to request from `@ai-orchestrator/system/SKILL_DISCOVERY.
 * React Native → `react-native`, `frontend-performance`
 * Bundle size → `web-performance`, `frontend`
 
+Output:
+* `skills_requested[]` — list of skill names to pass to `@ai-orchestrator/system/SKILL_DISCOVERY.md`
+
 ### Example
 
 **Input:** "The task list page takes 4.8s to load on mobile. API logs show the /tasks endpoint averages 1.2s."
@@ -78,6 +81,7 @@ List the domain skills to request from `@ai-orchestrator/system/SKILL_DISCOVERY.
 * **Bottleneck:** likely_bottleneck: "N+1 queries in /tasks endpoint", bottleneck_evidence: "1.2s API time with 10 tasks suggests per-task queries", investigation_needed: "Run EXPLAIN ANALYZE on task list query"
 * **Approach:** "Batch owner lookups with a single JOIN. Verify with profiling before and after."
 * **Success Criteria:** ["API p95 ≤ 200ms", "LCP ≤ 2.5s on simulated 4G"]
+* **Skills Requested:** ["database-performance", "indexing"]
 
 ## Common Rationalizations
 
