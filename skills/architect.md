@@ -26,7 +26,7 @@ Frame the problem before any analysis runs. Defines scope, constraints, approach
 1. Understand the goal.
 2. Define scope (in and out).
 3. State constraints and assumptions.
-4. Propose a high-level approach.
+4. Propose a high-level approach — no implementation details, no ticket-level task breakdown.
 5. Identify risks.
 6. Define success criteria.
 
@@ -53,12 +53,6 @@ Frame the problem before any analysis runs. Defines scope, constraints, approach
 
 **Success Criteria**
 * `success_criteria[]`
-
-### Rules
-
-* No implementation details.
-* No ticket-level task breakdown.
-* Prefer clarity over cleverness in approach design.
 
 ### Example
 
