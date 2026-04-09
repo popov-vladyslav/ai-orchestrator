@@ -2,7 +2,7 @@
 
 * **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
 * **Used by:** All modes — after `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`
-* **Uses:** normalized findings from `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`
+* **Uses:** normalized findings from `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`; in PERFORMANCE_MODE also accepts the framing output from `@ai-orchestrator/skills/performance-optimization.md` as directional context (proposed bottleneck and approach used to align priorities — not treated as a finding)
 * **Outputs to:** `@ai-orchestrator/skills/epic-generator.md`
 
 ---

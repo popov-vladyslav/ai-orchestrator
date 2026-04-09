@@ -34,7 +34,7 @@ Document what is currently known before proposing anything:
 * `gap` — the difference between metric and target
 * `profiling_data` — any traces, flame graphs, or query logs provided as input
 
-If no metric is available, document what measurement is needed before optimization can begin. Include it as a prerequisite finding so it appears in Checkpoint 1.
+If no metric is available, document what measurement is needed before optimization can begin. Flag it in the Checkpoint 1 output so the human knows measurement must happen before Phase 2 analysis begins.
 
 ### Step 2: Identify the likely bottleneck
 

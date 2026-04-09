@@ -1,7 +1,7 @@
 ## System Context
 
 * **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after problem framing (FEATURE_MODE, BUGFIX_MODE, REVIEW_MODE) or as the first step (PERFORMANCE_MODE)
+* **Used by:** All modes — after problem framing (Phase 2)
 * **Uses:** `@ai-orchestrator/skills-mapping.md` for domain → skill auto-selection rules
 * **Outputs to:** `@ai-orchestrator/system/SKILL_EXECUTOR.md` — one call per selected skill
 
@@ -12,6 +12,7 @@ You are responsible for selecting the best available skills.
 ## Input
 
 * problem description, review output, or feature framing
+* in PERFORMANCE_MODE: also accepts `skills_requested[]` from `@ai-orchestrator/skills/performance-optimization.md` — use as the starting skill selection, then refine with `@ai-orchestrator/skills-mapping.md`
 
 ---
 
