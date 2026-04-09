@@ -49,7 +49,7 @@ Every runtime file in this system and when to load it:
 | `@ai-orchestrator/skills/architect.md` | Frames problem, defines scope, proposes approach | FEATURE_MODE or BUGFIX_MODE — first step |
 | `@ai-orchestrator/skills/review-validator.md` | Validates review consistency, removes weak findings | REVIEW_MODE — first step; BUGFIX_MODE — alternative to Architect |
 | `@ai-orchestrator/skills/performance-optimization.md` | Frames performance problem, establishes baseline, identifies likely bottleneck | PERFORMANCE_MODE — Phase 1 |
-| `@ai-orchestrator/system/SKILL_DISCOVERY.md` | Selects relevant skills for the problem domain | All modes — after problem framing, or as first step in PERFORMANCE_MODE |
+| `@ai-orchestrator/system/SKILL_DISCOVERY.md` | Selects relevant skills for the problem domain | All modes — after problem framing (Phase 2) |
 | `@ai-orchestrator/skills-mapping.md` | Maps problem domains to skill names | Used by SKILL_DISCOVERY |
 | `@ai-orchestrator/system/SKILL_EXECUTOR.md` | Executes one skill and converts output to findings | Called per skill by SKILL_DISCOVERY |
 | `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md` | Merges, deduplicates, and normalizes all findings | All modes — after all skills run |
