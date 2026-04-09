@@ -18,7 +18,7 @@ You are executing one ticket.
 ## Rules
 
 * Before starting work, move the ticket from TODO to IN PROGRESS in `.ai-orchestrator/<slug>/tasks.md`.
-* After completing work, move the ticket from IN PROGRESS to DONE in `.ai-orchestrator/<slug>/tasks.md`.
+* After completing work, do not move the ticket to DONE; leave it IN PROGRESS pending reviewer approval. The orchestrator/review flow updates it to DONE only after approval.
 * Only modify listed files unless the ticket is updated and re-approved.
 * Keep changes minimal and scoped to the ticket goal.
 * Preserve behavior outside the approved scope.

@@ -74,7 +74,7 @@ When delegating, provide the specialist with:
 Read @ai-orchestrator/system/ORCHESTRATOR.md
 
 Execute tickets [T-001, T-002] from workspace:
-  <workspace_path>/.ai-orchestrator/<slug>/
+  <workspace_path>/
 
 Read context.md for orientation, tickets.md for full specs.
 Update tasks.md and results.md as you work.
