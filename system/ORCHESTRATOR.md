@@ -131,6 +131,9 @@ Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrat
 
 → **[Checkpoint 1: after framing]** human approval
 
+> **STOP. Do not produce any output for Phase 2. Your response ends here.**
+> **Wait for the user to reply APPROVE, MODIFY, or REJECT before continuing.**
+
 ### Phase 2: Analysis (all modes)
 
 1. Load `@ai-orchestrator/system/SKILL_DISCOVERY.md` → select relevant skills (consults `@ai-orchestrator/skills-mapping.md`)
@@ -145,6 +148,9 @@ Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrat
 
 → **[Checkpoint 2: after normalized findings]** human approval
 
+> **STOP. Do not produce any output for Phase 3. Your response ends here.**
+> **Wait for the user to reply APPROVE, MODIFY, or REJECT before continuing.**
+
 ### Phase 3: Planning (all modes)
 
 1. Load `@ai-orchestrator/skills/prioritizer.md` → assign priority and effort
@@ -158,7 +164,10 @@ Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume `.ai-orchestrat
 
 → **[Checkpoint 3: after planning artifacts]** human approval
 
-After approval: write full ticket artifacts to `.ai-orchestrator/<slug>/tickets.md`. Add ticket ids to the TODO section of `.ai-orchestrator/<slug>/tasks.md`.
+> **STOP. Do not produce any output for Phase 4. Your response ends here.**
+> **Wait for the user to reply APPROVE, MODIFY, or REJECT before continuing.**
+
+After approval: write full ticket artifacts to `.ai-orchestrator/<slug>/tickets.md` and add ticket ids to the TODO section of `.ai-orchestrator/<slug>/tasks.md` BEFORE presenting Checkpoint 3 or taking any further action. If running in plan mode and writes are blocked, note the deferral explicitly — complete all workspace writes at the start of Phase 4 before executing any ticket. Update `context.md` Status to `executing`.
 
 ### Phase 4: Execution (all modes)
 
@@ -187,7 +196,13 @@ If quality checks fail:
 
 Only present Checkpoint 4 after quality checks pass (or are escalated as blockers).
 
+Update `context.md` Status to `reviewing` before presenting Checkpoint 4.
+
 → **[Checkpoint 4: after execution, review, and quality gate]** before merge or final delivery
+
+> **STOP. Do not mark work as complete or take any further action. Your response ends here.**
+> **Wait for the user to reply APPROVE, MODIFY, or REJECT before continuing.**
+
   → After approval: update `context.md` Status to `done`, ask the user whether to keep or delete `.ai-orchestrator/<slug>/`
 
 ### Lightweight Path
@@ -197,14 +212,17 @@ For single-surface changes with clear scope and no domain ambiguity, use this sh
 0. Load `@ai-orchestrator/system/WORKSPACE.md` → create or resume workspace
 1. Phase 1: Framing (as above, based on mode)
    → **[Checkpoint 1: after framing]**
+   > **STOP. Wait for APPROVE / MODIFY / REJECT before continuing.**
 2. Skip Skill Discovery and Epic Generator
 3. Load `@ai-orchestrator/skills/ticket-splitter.md` → produce a single ticket
 4. Load `@ai-orchestrator/prompts/plan-reviewer.md` → review plan
    → **[Checkpoint 2+3: combined findings and planning approval]**
+   > **STOP. Wait for APPROVE / MODIFY / REJECT before continuing.**
 5. Move ticket TODO → IN PROGRESS in `tasks.md`. Load `@ai-orchestrator/prompts/task-executor.md` → execute
 6. Load `@ai-orchestrator/prompts/reviewer.md` → review. On APPROVE: move ticket IN PROGRESS → DONE in `tasks.md`.
    → **[Quality Gate]** run project quality checks (see standard pipeline)
    → **[Checkpoint 4: after execution, review, and quality gate]**
+   > **STOP. Wait for APPROVE / MODIFY / REJECT before continuing.**
    → After approval: ask user whether to keep or delete workspace
 
 Use the lightweight path when:
@@ -349,6 +367,7 @@ Never:
 * skip validation or review
 * change storage or database behavior without migration strategy
 * claim completion without verification evidence
+* skip a phase or step unless it matches an explicit Skip Rule in this document — user approval, a comment, or implied context does NOT authorize skipping a phase; when in doubt, complete the phase
 
 ---
 

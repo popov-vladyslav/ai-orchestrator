@@ -50,6 +50,10 @@ You are executing one ticket.
 * `remaining_risks[]`
 * `rollback_notes[]`
 
-### Workspace Write
+### Mandatory Workspace Write
 
-After completing execution, append the Execution Summary and Risks to `.ai-orchestrator/<slug>/results.md` under a `## <ticket_id>` heading.
+BEFORE presenting your output to the user:
+1. Update the ticket from TODO → IN PROGRESS in `.ai-orchestrator/<slug>/tasks.md`.
+2. Append the Execution Summary and Risks to `.ai-orchestrator/<slug>/results.md` under a `## <ticket_id>` heading (create the file if it does not exist).
+
+If either write fails or is blocked, report it as a blocker — do not present output and do not continue.

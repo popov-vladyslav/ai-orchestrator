@@ -56,9 +56,13 @@ When outputting REVISE, fix_instructions must contain at least one entry per blo
 * `decision`: APPROVE or REVISE
 * `summary`
 
-### Workspace Write
+### Mandatory Workspace Write
 
-After completing review, append the review output (Blockers, Issues, Verification Assessment, and decision) to `.ai-orchestrator/<slug>/results.md` under the existing `## <ticket_id>` heading.
+BEFORE presenting your output to the user:
+1. Append the review output (Blockers, Issues, Verification Assessment, and decision) to `.ai-orchestrator/<slug>/results.md` under the existing `## <ticket_id>` heading.
+2. If decision is APPROVE: update the ticket from IN PROGRESS → DONE in `.ai-orchestrator/<slug>/tasks.md`.
+
+If either write fails or is blocked, report it as a blocker — do not present output and do not continue.
 
 ---
 
