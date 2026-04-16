@@ -1,10 +1,6 @@
-## System Context
-
-* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`
-* **Uses:** normalized findings from `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`; in PERFORMANCE_MODE also accepts the framing output from `@ai-orchestrator/skills/performance-optimization.md` as directional context (proposed bottleneck and approach used to align priorities — not treated as a finding)
-* **Outputs to:** `@ai-orchestrator/skills/epic-generator.md`
-
+---
+name: prioritizer
+description: Assigns P0–P3 priority and XS–L effort to each finding after aggregation. Runs after FINDINGS_AGGREGATOR in all modes — never skipped. In PERFORMANCE_MODE also accepts the performance-optimization framing output as directional context. If the findings list is empty, surface that as a blocker rather than producing empty output.
 ---
 
 ## Overview

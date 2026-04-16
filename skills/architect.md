@@ -1,10 +1,6 @@
-## System Context
-
-* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** FEATURE_MODE (Phase 1), BUGFIX_MODE (Phase 1)
-* **Uses:** nothing
-* **Outputs to:** `@ai-orchestrator/system/SKILL_DISCOVERY.md`
-
+---
+name: architect
+description: Frames problems before analysis runs. Use in FEATURE_MODE and BUGFIX_MODE (Phase 1) to define scope, constraints, approach, and success criteria before skill discovery runs. Skip when input already defines scope, constraints, and success criteria explicitly — pass directly to SKILL_DISCOVERY instead.
 ---
 
 ## Overview

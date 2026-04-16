@@ -1,0 +1,19 @@
+{
+  "name": "popov-vladyslav-ai-orchestrator",
+  "owner": {
+    "name": "Vladyslav Popov"
+  },
+  "metadata": {
+    "description": "Universal AI execution workflow — code review, feature development, bug fixing, and performance optimization through structured pipelines with human approval gates."
+  },
+  "plugins": [
+    {
+      "name": "ai-orchestrator",
+      "source": {
+        "source": "github",
+        "repo": "popov-vladyslav/ai-orchestrator"
+      },
+      "description": "Universal AI workflow with automatic mode selection (REVIEW / FEATURE / BUGFIX / PERFORMANCE), skill-based domain analysis via npx skills, structured artifact pipeline, 4-checkpoint human approval gates, and multi-agent Codex delegation with parallel execution."
+    }
+  ]
+}

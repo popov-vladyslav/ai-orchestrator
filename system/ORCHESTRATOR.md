@@ -1,26 +1,13 @@
+---
+name: orchestrator
+description: Universal AI execution workflow entry point. Authoritative spec for REVIEW_MODE, FEATURE_MODE, BUGFIX_MODE, and PERFORMANCE_MODE pipelines. Load at the start of every session and follow exactly — do not skip phases or checkpoints, do not improvise. Referenced by the ai-orchestrator:orchestrator skill and specialist agents.
+---
+
 # AI ORCHESTRATOR
 
-## MANDATORY — Read and follow this file exactly. Do NOT summarise, skip, or improvise any step.
+Read this file in full before taking any action. Load every referenced file at the step that requires it — never proceed from memory or summaries. Execute every phase and checkpoint in order.
 
-## How to Use
-
-Point any AI at this file using its absolute path on your machine (e.g. `/Users/you/ai-orchestrator/system/ORCHESTRATOR.md`). It is the single entry point for the entire system. You MUST read this entire file before taking any action. All other files in the system are referenced explicitly — you will load each file at the step that requires it.
-
-**Path convention:** `@ai-orchestrator/` is a self-referential prefix used internally between files — it resolves relative to wherever you installed this tool. You never type it yourself; just use the absolute path to this file when starting a session.
-
-**Setup:** Clone this repo once to a stable location on your machine (e.g. `~/ai-orchestrator/`). Point your AI at the absolute path to this file at the start of any session. The tool works across all your projects without being copied into each one.
-
-### Execution Rules
-
-When this file or any file in this system tells you to load a file (e.g. "Load `@ai-orchestrator/skills/architect.md`"), you MUST use the Read tool to read that file in full before continuing. Do NOT proceed based on memory, summaries, or assumptions about the file's content.
-
-You are NOT allowed to:
-- **Skip phases or checkpoints** — every phase and checkpoint defined in the pipeline below must be executed in order
-- **Combine phases** that this file defines as separate
-- **Improvise your own workflow** instead of following the pipeline as written
-- **Summarise what a referenced file says** instead of actually reading and executing it
-- **Proceed past a checkpoint** without presenting it to the user and receiving approval
-- **Claim you followed this orchestrator** if you did not read and execute each step
+**How to use:** Point any AI at the absolute path of this file (`/path/to/ai-orchestrator/system/ORCHESTRATOR.md`), or install via the Claude Code marketplace and use `/orchestrator`. `@ai-orchestrator/` is a self-referential prefix used in file references — it resolves relative to your install location.
 
 ---
 
@@ -41,14 +28,7 @@ If multiple workspaces exist, list them and ask the user which to resume. See `@
 
 ## Purpose
 
-Universal AI execution workflow with:
-
-* automatic mode selection
-* skill-based routing
-* structured artifacts between phases
-* human approval at defined checkpoints
-* parallel execution when safe
-* support for multi-agent delegation
+Universal AI execution workflow with automatic mode selection, skill-based routing, structured artifacts between phases, human approval at defined checkpoints, parallel execution when safe, and multi-agent delegation support.
 
 Works with: Codex, Claude, GPT, etc.
 

@@ -1,10 +1,6 @@
-## System Context
-
-* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after `@ai-orchestrator/skills/epic-generator.md` (skippable if one atomic ticket remains)
-* **Uses:** epics from `@ai-orchestrator/skills/epic-generator.md`
-* **Outputs to:** `@ai-orchestrator/prompts/plan-reviewer.md` → `@ai-orchestrator/approval-template.md` (Checkpoint 3) → `.ai-orchestrator/<slug>/tickets.md` and `.ai-orchestrator/<slug>/tasks.md` (after human approval)
-
+---
+name: ticket-splitter
+description: Splits one epic into atomic implementation tickets touching 1–5 files with clear acceptance criteria and verifiable outcomes. Called once per epic after epic generation. Skip only when exactly one atomic ticket remains after epic generation — treat the epic goal as the single ticket goal.
 ---
 
 ## Overview

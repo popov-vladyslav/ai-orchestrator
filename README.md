@@ -2,6 +2,48 @@
 
 A universal AI execution workflow for code review, feature development, bug fixes, and performance work. Works with Claude Code, Codex, GPT, and any AI that can read markdown files.
 
+## Install
+
+**Claude Code marketplace:**
+
+```
+/plugin marketplace add popov-vladyslav/ai-orchestrator
+/plugin install ai-orchestrator
+```
+
+> Replace `popov-vladyslav` with your GitHub username in `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` before publishing.
+
+**Local / development:**
+
+```bash
+git clone https://github.com/popov-vladyslav/ai-orchestrator ~/ai-orchestrator
+claude --plugin-dir ~/ai-orchestrator
+```
+
+## Quick Start
+
+Once installed, use the `/orchestrator` command:
+
+```
+/orchestrator Review the authentication module in src/auth/ for security issues
+
+/orchestrator Add dark mode support to the settings screen
+
+/orchestrator Fix the login button not responding on Android
+
+/orchestrator The dashboard takes 5 seconds to load — investigate and fix
+```
+
+The AI will:
+1. Detect the mode (REVIEW / FEATURE / BUGFIX / PERFORMANCE)
+2. Create a workspace at `.ai-orchestrator/<feature-slug>/`
+3. Frame the problem → Checkpoint 1
+4. Run domain skills via `npx skills` if available, or fall back to inline analysis → surface findings → Checkpoint 2
+5. Build epics and tickets → Checkpoint 3
+6. Execute tickets (delegates to Codex for heavy implementation)
+7. Review each ticket + quality gate → Checkpoint 4
+8. Ask whether to keep or delete the workspace
+
 ## Setup
 
 1. **Clone this repo once** to a stable location on your machine:
@@ -23,6 +65,10 @@ A universal AI execution workflow for code review, feature development, bug fixe
    - `.ai-orchestrator/` — temporary workspaces, one per active feature, inside each project. Gitignored by default.
 
 5. **Prerequisites:** Any AI assistant that can read files — Claude Code, Codex, GPT with file access, etc. No installs required beyond the markdown files.
+
+**Optional accelerators** (not required for the core workflow):
+- `npx skills` and the skills ecosystem at `https://skills.sh/` — used in Phase 2 for domain skill discovery. If unavailable, the AI falls back to inline domain analysis.
+- A Codex-capable agent or parallel agent runtime — used for delegating heavy tickets (effort M or L). If unavailable, the orchestrator executes all tickets inline.
 
 ## Example
 
@@ -116,4 +162,3 @@ your-project/
 ```
 
 The workspace is created automatically, survives across sessions, and the user is asked whether to keep or delete it after the final approval checkpoint. `.ai-orchestrator/` is gitignored by default.
-

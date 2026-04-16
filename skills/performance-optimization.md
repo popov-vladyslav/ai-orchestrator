@@ -1,10 +1,6 @@
-## System Context
-
-* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** PERFORMANCE_MODE — Phase 1 (frames the performance problem before skill discovery runs)
-* **Uses:** performance problem description, available profiling data, metrics, or user-reported symptoms
-* **Outputs to:** `@ai-orchestrator/system/SKILL_DISCOVERY.md`; output serves as framing context for Checkpoint 1
-
+---
+name: performance-optimization
+description: Frames a performance problem by establishing a measurable baseline and identifying the most likely bottleneck before analysis skills run. Use in PERFORMANCE_MODE (Phase 1) when measurable slowness is reported — latency, load time, re-renders, CPU/memory spikes. Optimization without measurement is guessing. Do NOT use for bugs or incorrect behavior (use BUGFIX_MODE) or for performance as a secondary concern in a feature (use FEATURE_MODE and note the constraint in architect framing).
 ---
 
 ## Overview

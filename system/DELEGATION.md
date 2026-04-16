@@ -1,10 +1,6 @@
-## System Context
-
-* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** ORCHESTRATOR — when delegating bounded work to a specialist agent
-* **Uses:** `@ai-orchestrator/system/WORKSPACE.md` (shared workspace contract)
-* **Outputs to:** nothing — defines the delegation contract, not a pipeline step
-
+---
+name: delegation
+description: Defines the contract for delegating bounded work from the orchestrator to specialist agents. Load when Phase 4 execution should be handed to Codex, a parallel agent, or any other specialist. Agent-agnostic — works with Claude Code, Codex, GPT, or any tool that can read workspace files.
 ---
 
 # DELEGATION
@@ -38,7 +34,7 @@ The specialist agent:
 2. Reads `tickets.md` → full spec for assigned tickets
 3. Reads `tasks.md` → check current state
 4. Executes each assigned ticket per `@ai-orchestrator/prompts/task-executor.md`
-5. Moves tickets TODO → IN PROGRESS → DONE in `tasks.md`
+5. Moves ticket `TODO → IN PROGRESS` in `tasks.md`; leaves it `IN PROGRESS` when done — the orchestrator sets `DONE` only after reviewer approval
 6. Appends execution summary to `results.md`
 
 ---
@@ -66,9 +62,59 @@ The orchestrator monitors `tasks.md` to track progress across all specialists.
 
 ---
 
+## Delegating to a Specialist Agent
+
+When a ticket is implementation-heavy (effort M or L) and has clear file scope and acceptance criteria, delegate it to a specialist agent rather than executing inline.
+
+Use whatever specialist capability your runtime provides — a subagent, Codex, a parallel Claude agent, or any tool that can read workspace files and follow the contract above.
+
+**Example: Claude Code subagent**
+```
+Agent({
+  prompt: "Execute tickets [T-001] from workspace: <workspace_path>/. Read context.md for orientation, tickets.md for full specs. Move each ticket TODO → IN PROGRESS when you start. Leave IN PROGRESS when done. Append execution summary to results.md."
+})
+```
+
+**Example: Codex agent** (if `codex:codex-rescue` is available in your setup)
+```
+Execute tickets [T-001, T-002] from workspace:
+  <workspace_path>/
+
+Read context.md for orientation, tickets.md for full specs.
+Move each ticket TODO → IN PROGRESS in tasks.md when you start it.
+Leave tickets IN PROGRESS when done — the orchestrator sets DONE after review.
+Append execution summary to results.md.
+Orchestrator reference: <absolute-path>/system/ORCHESTRATOR.md
+```
+
+The specialist executes, writes to the workspace, and returns with tickets in `IN PROGRESS`. The orchestrator reads `results.md`, runs the reviewer, and sets each ticket to `DONE` after approval.
+
+---
+
+## Parallel Dispatch with Multiple Agents
+
+When multiple independent tickets can run concurrently, dispatch one specialist agent per ticket or ticket group. Each agent receives its own ticket IDs and the shared workspace path.
+
+Use whatever parallel dispatch capability your runtime provides (e.g., `superpowers:dispatching-parallel-agents` in Claude Code, multiple concurrent `Agent` calls, or any equivalent).
+
+Recommended max concurrency: 2–4 agents. Monitor `tasks.md` to track progress across all specialists.
+
+---
+
+## Delegation Decision Table
+
+| Ticket effort | File conflicts with others | Recommendation |
+|---|---|---|
+| XS or S | — | Execute inline |
+| M or L | No conflicts, no deps | Delegate to Codex |
+| M or L | Conflicts or unresolved deps | Execute serially |
+| Multiple M/L, all independent | No file conflicts | Parallel Codex dispatch |
+
+---
+
 ## Invocation Template
 
-When delegating, provide the specialist with:
+**Generic (any specialist):**
 
 ```
 Read @ai-orchestrator/system/ORCHESTRATOR.md
@@ -77,5 +123,20 @@ Execute tickets [T-001, T-002] from workspace:
   <workspace_path>/
 
 Read context.md for orientation, tickets.md for full specs.
-Update tasks.md and results.md as you work.
+Move each ticket TODO → IN PROGRESS in tasks.md when you start it.
+Leave tickets IN PROGRESS when done — the orchestrator sets DONE after review.
+Append execution summary to results.md.
+```
+
+**Example with a Codex-capable agent:**
+
+```
+Execute tickets [T-001, T-002] from workspace:
+  /path/to/project/.ai-orchestrator/add-oauth-login/
+
+Read context.md for orientation, tickets.md for full specs.
+Move each ticket TODO → IN PROGRESS in tasks.md when you start it.
+Leave tickets IN PROGRESS when done — the orchestrator sets DONE after review.
+Append execution summary to results.md.
+Orchestrator reference: /path/to/ai-orchestrator/system/ORCHESTRATOR.md
 ```

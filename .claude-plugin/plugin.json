@@ -1,0 +1,12 @@
+{
+  "name": "ai-orchestrator",
+  "description": "Universal AI execution workflow — structured pipelines for code review, feature development, bug fixes, and performance optimization. Automatic mode selection, skill-based routing via npx skills, human approval checkpoints, and multi-agent delegation with Codex.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Vladyslav Popov"
+  },
+  "homepage": "https://github.com/popov-vladyslav/ai-orchestrator",
+  "repository": "https://github.com/popov-vladyslav/ai-orchestrator",
+  "license": "MIT",
+  "commands": "./.claude/commands"
+}

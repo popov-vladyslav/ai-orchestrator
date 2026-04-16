@@ -1,10 +1,6 @@
-## System Context
-
-* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** All modes — after `@ai-orchestrator/skills/prioritizer.md` (skippable if work fits one group)
-* **Uses:** prioritized findings from `@ai-orchestrator/skills/prioritizer.md`
-* **Outputs to:** `@ai-orchestrator/skills/ticket-splitter.md`; writes epic artifacts to `.ai-orchestrator/<slug>/findings.md`
-
+---
+name: epic-generator
+description: Groups related findings into 2–8 independently shippable epics after prioritization. Each epic must be valuable on its own without requiring other epics to complete. Skip only when all findings fit one independently shippable group — treat as an implicit single epic and pass directly to ticket-splitter.
 ---
 
 ## Overview

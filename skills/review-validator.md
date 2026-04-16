@@ -1,10 +1,6 @@
-## System Context
-
-* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** REVIEW_MODE (Phase 1), BUGFIX_MODE (Phase 1 — alternative to Architect)
-* **Uses:** nothing
-* **Outputs to:** `@ai-orchestrator/system/FINDINGS_AGGREGATOR.md`
-
+---
+name: review-validator
+description: Validates and normalizes an incoming code review before it enters the pipeline. Use in REVIEW_MODE (Phase 1, always) and BUGFIX_MODE when input is an existing review rather than a raw bug report. Removes weak/duplicate findings, validates technical accuracy, normalizes to canonical Finding schema. Skip when the review is already deduplicated and prioritized — pass findings directly to FINDINGS_AGGREGATOR instead.
 ---
 
 ## Overview

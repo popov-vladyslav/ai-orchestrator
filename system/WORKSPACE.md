@@ -214,11 +214,12 @@ Specialist agent (session 2)
   → reads .ai-orchestrator/auth-feature/tasks.md      (check state)
   → moves T-001 from TODO → IN PROGRESS in tasks.md
   → executes T-001
-  → moves T-001 from IN PROGRESS → DONE in tasks.md
+  → leaves T-001 IN PROGRESS in tasks.md (orchestrator sets DONE after review)
   → appends execution summary to results.md
 
 Orchestrator agent (session 3)
   → reads .ai-orchestrator/auth-feature/tasks.md      (resume)
   → reviews T-001 output
+  → sets T-001 DONE in tasks.md after approval
   → continues with T-002
 ```

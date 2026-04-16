@@ -1,10 +1,6 @@
-## System Context
-
-* **Part of:** `@ai-orchestrator/system/ORCHESTRATOR.md`
-* **Used by:** Ticket execution phase — all modes; may be delegated to a specialist agent via `@ai-orchestrator/system/DELEGATION.md`
-* **Uses:** full ticket artifacts from `.ai-orchestrator/<slug>/tickets.md`; reads and updates `.ai-orchestrator/<slug>/tasks.md` for state tracking
-* **Outputs to:** `@ai-orchestrator/prompts/reviewer.md`
-
+---
+name: task-executor
+description: Executes one approved ticket. Reads workspace context.md and tickets.md, moves ticket TODO→IN PROGRESS, implements changes scoped strictly to the ticket spec, appends execution summary to results.md. Runs in Phase 4 for all modes. May be delegated to a specialist agent (Codex or parallel agent) via DELEGATION.md for M/L effort tickets with clear file scope.
 ---
 
 You are executing one ticket.
